@@ -264,7 +264,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'cube-solver',
-    title: "Rubik's Cube Solver with IDA*",
+    title: "IDA* Rubik's Cube Solver",
     label: 'CMPT 225 Project',
     year: '2025',
     kind: 'Java Data Structures & Algorithms',
