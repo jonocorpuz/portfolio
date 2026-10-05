@@ -21,15 +21,7 @@ export function Header({
       className="fixed inset-x-0 top-0 z-50 flex items-start justify-between gap-4 px-[18px] py-[18px] text-[13px] sm:text-[14px] font-medium tracking-[-0.02em] text-white sm:px-10 sm:py-7"
       style={shadow}
     >
-      {onHome ? (
-        <button type="button" onClick={onHome} className={`cursor-pointer whitespace-nowrap hover:opacity-70 ${ring}`}>
-          {site.name}
-        </button>
-      ) : (
-        <a href="#/" className={`whitespace-nowrap hover:opacity-70 ${ring}`}>
-          {site.name}
-        </a>
-      )}
+      <span className="whitespace-nowrap">{site.name}</span>
       <nav aria-label="Site links" className="flex gap-3 sm:gap-5">
         {site.links.map((l) => {
           const external = /^https?:/.test(l.href) || l.href.endsWith('.pdf')
@@ -40,6 +32,15 @@ export function Header({
               href={l.href}
               aria-current={isCurrent ? 'page' : undefined}
               {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+              // Going home from a project/about page closes it (history-aware) rather than pushing a new entry.
+              onClick={
+                onHome && l.href === '#/'
+                  ? (e) => {
+                      e.preventDefault()
+                      onHome()
+                    }
+                  : undefined
+              }
               className={`hover:opacity-60 ${ring}`}
             >
               {l.label}
