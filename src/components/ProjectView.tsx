@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useIsPresent } from 'motion/react'
 import type { Project } from '../types'
 import { BODY_DELAY, easeOutExpo, morphSpring } from '../lib/motion'
 import { ProjectDetailBody } from './ProjectDetailBody'
+import { useTitleMorph } from '../lib/useTitleMorph'
 
 interface Props {
   project: Project
@@ -11,9 +12,9 @@ interface Props {
 }
 
 /**
- * Detail page. The banner and headline share layoutIds with the front Rolodex card
- * (`card-<slug>`, `cover-<slug>`, `title-<slug>`) so opening morphs pill -> banner and
- * card title -> headline; closing reverses into the stack.
+ * Detail page. The banner shares layoutIds with the front Rolodex card (`card-<slug>`,
+ * `cover-<slug>`) so opening morphs pill -> banner; the headline morphs from the card title via
+ * useTitleMorph. Closing reverses both into the stack.
  */
 export function ProjectView({ project, reduced, onClose }: Props) {
   const isPresent = useIsPresent()
@@ -26,7 +27,7 @@ export function ProjectView({ project, reduced, onClose }: Props) {
       className="relative min-h-screen bg-black"
       // Entering view sits above the exiting one so the morphing element is always on top.
       style={{ zIndex: isPresent ? 30 : 20 }}
-      // Exiting detail fades quickly; the banner/headline hand off to the card via layoutId.
+      // Exiting detail fades quickly; the banner/headline hand off to the card.
       exit={{ opacity: 0, transition: { duration: reduced ? 0.15 : 0.25, ease: 'easeOut' } }}
     >
       <AnimatePresence mode="wait">
@@ -35,6 +36,7 @@ export function ProjectView({ project, reduced, onClose }: Props) {
           project={project}
           reduced={reduced}
           isHop={project.slug !== openedWith.current}
+          exiting={!isPresent}
           onClose={onClose}
         />
       </AnimatePresence>
@@ -46,14 +48,19 @@ function ProjectContent({
   project,
   reduced,
   isHop,
+  exiting,
   onClose,
 }: {
   project: Project
   reduced: boolean
   isHop: boolean
+  exiting: boolean
   onClose: () => void
 }) {
   const morph = reduced ? { duration: 0.12 } : morphSpring
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  // Opening from the stack: the headline flies in from the front card's title.
+  useTitleMorph(titleRef, project.slug, !isHop, reduced)
 
   // Detail always starts at the top (also after a project-to-project hop).
   useLayoutEffect(() => {
@@ -108,17 +115,17 @@ function ProjectContent({
           <span aria-hidden>←</span> all projects
         </motion.button>
 
-        {/* Headline: inline-block so its box hugs the text; the card title also hugs its text, so both
-            boxes share an aspect ratio and the layout morph is a near-uniform scale (no squish).
-            The two elements crossfade during the morph (40px medium -> 168px semibold). */}
+        {/* Headline: inline-block so its box hugs the text. It morphs to/from the card title as a single
+            element (useTitleMorph); while the detail view exits it hides so the card title takes over. */}
         <div className="col-span-full mt-8 lg:mt-12">
-          <motion.h1
-            layoutId={`title-${project.slug}`}
-            transition={morph}
-            className="inline-block text-[clamp(56px,11vw,168px)] font-semibold leading-none tracking-[-0.05em] text-white"
+          <h1
+            ref={titleRef}
+            data-title-morph={project.slug}
+            className="inline-block text-balance text-[clamp(44px,15.5vw,56px)] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[clamp(56px,11vw,168px)]"
+            style={{ visibility: exiting ? 'hidden' : undefined }}
           >
             {project.title}
-          </motion.h1>
+          </h1>
         </div>
       </div>
 

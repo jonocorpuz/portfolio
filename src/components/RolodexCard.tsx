@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { motion, type Transition } from 'motion/react'
+import { motion, useIsPresent, type Transition } from 'motion/react'
 import type { Project } from '../types'
 import { DIM, PEEK, SCALE_STEP, flipSpring, morphSpring, stackSpring, easeIn } from '../lib/motion'
+import { useTitleMorph } from '../lib/useTitleMorph'
 
 /**
  * Where a card sits, derived purely from its depth = (index - active) mod n.
@@ -61,6 +62,11 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, reduced,
   const isFront = zone === 'stack' && depth === 0
   const isVisibleBack = zone === 'stack' && depth > 0
   const hidden = zone !== 'stack'
+  // false while the home view plays its exit (a project is opening): the headline takes over the title.
+  const isPresent = useIsPresent()
+  const titleRef = useRef<HTMLSpanElement>(null)
+  // Returning from a project: the front card's title flies back from the headline.
+  useTitleMorph(titleRef, project.slug, isFront, reduced)
 
   // Stagger the deal-in only on mount (first load, or returning from a project).
   const mounted = useRef(false)
@@ -118,22 +124,21 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, reduced,
 
         {/* Title lives outside the clipped button so it is never clipped mid-morph. */}
         {/* Only the front card shows its title (back cards are covered; the falling card's title fades
-            ahead of its image). Opacity lives on this wrapper, not the layoutId element, so it never
-            fights the shared-element crossfade. */}
+            ahead of its image). The title is not a layoutId element: see useTitleMorph. */}
         <motion.span
           className="pointer-events-none absolute inset-0 flex items-center justify-center"
           initial={false}
           animate={{ opacity: isFront ? 1 : 0 }}
           transition={{ duration: isFront ? 0.3 : zone === 'fallen' ? 0.4 : 0.2, ease: 'easeOut' }}
         >
-          <motion.span
-            layoutId={`title-${project.slug}`}
-            transition={reduced ? { duration: 0.12 } : morphSpring}
+          <span
+            ref={titleRef}
+            data-title-morph={project.slug}
             className="inline-block whitespace-nowrap text-[clamp(24px,7vw,40px)] font-medium leading-none tracking-[-0.045em] text-white"
-            style={{ textShadow: '0 1px 18px rgba(0,0,0,0.28)' }}
+            style={{ textShadow: '0 1px 18px rgba(0,0,0,0.28)', visibility: isPresent ? undefined : 'hidden' }}
           >
             {project.title}
-          </motion.span>
+          </span>
         </motion.span>
       </div>
     </motion.div>
