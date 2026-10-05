@@ -57,7 +57,7 @@ export function Footer({ project, index, total }: { project: Project; index: num
   const reduce = useReducedMotion()
   const y = reduce ? 0 : 10
   return (
-    <footer className="pointer-events-none fixed inset-x-0 bottom-0 z-40 grid grid-cols-[1fr_auto] items-end min-[400px]:grid-cols-[1fr_auto_1fr] gap-4 px-[18px] pb-[18px] text-[13px] tracking-[-0.02em] text-white sm:px-10 sm:pb-7">
+    <footer className="pointer-events-none fixed inset-x-0 bottom-0 z-40 grid grid-cols-[1fr_auto] items-end gap-4 px-[18px] pb-[18px] text-[13px] tracking-[-0.02em] text-white sm:px-10 sm:pb-7">
       {/* Floor fade: the falling card's mirrored "reflection" dissolves before it reaches the footer text. */}
       <div
         aria-hidden
@@ -69,11 +69,7 @@ export function Footer({ project, index, total }: { project: Project; index: num
           {project.year} · {project.kind}
         </div>
       </div>
-      <div className="hidden flex-col items-center text-center leading-tight min-[400px]:flex">
-        <span className="text-[12px] text-white/70">{site.name} 2026 all rights reserved</span>
-        <span className="mt-1 hidden max-w-[44ch] text-[11px] text-white/50 sm:block">{site.blurb}</span>
-      </div>
-      <div className="col-start-2 justify-self-end min-[400px]:col-start-3 font-medium tabular-nums" aria-label={`Project ${index + 1} of ${total}`}>
+      <div className="justify-self-end font-medium tabular-nums" aria-label={`Project ${index + 1} of ${total}`}>
         <span className="relative inline-flex h-[1.2em] overflow-hidden align-bottom">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
