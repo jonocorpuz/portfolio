@@ -14,7 +14,7 @@ const RESUME = `${import.meta.env.BASE_URL}resume.pdf`
 
 export const site: SiteInfo = {
   name: 'Jono Corpuz',
-  blurb: "A slate of software I've designed, built and shipped — from iOS apps to systems code in C.",
+  blurb: "Things I've built, from iOS apps to a shell written in C. Scroll to flip through, click one to read more.",
   links: [
     { label: 'about', href: '#/about' },
     { label: 'github', href: GITHUB },
@@ -24,11 +24,11 @@ export const site: SiteInfo = {
 }
 
 export const about: AboutInfo = {
-  tagline: 'iOS engineer and Computing Science student at Simon Fraser University.',
+  tagline: 'I build iOS apps, and I like knowing what happens underneath them.',
   bio: [
-    "I'm Jono, a software engineer in Vancouver studying Computing Science at SFU. I like building native apps that feel effortless to use, and I'm just as happy down at the systems level writing C against POSIX.",
-    'At Back On Stage I worked as an iOS Software Engineer on the native SwiftUI companion app for an established B2B SaaS platform. I turned complex web workflows, originally built in PHP and React, into native mobile experiences on top of existing REST APIs and AWS infrastructure, using MVVM so later phases are easy to build on.',
-    'Outside of work I build iOS apps for things I care about, like cars and golf, and I compete in hackathons. I placed runner-up at StormHacks in both 2025 and 2026.',
+    "I'm Jono. I study Computing Science at Simon Fraser University and live in Vancouver.",
+    'Most of my own projects end up on an iPhone. From January to August 2026 I was an iOS software engineer at Back On Stage, helping build the native iOS app for a B2B SaaS platform that already ran on the web. A lot of that job was taking workflows that had grown up in PHP and React and figuring out how they should actually feel on a phone, then wiring them to the REST APIs and AWS services that were already there. We structured it around MVVM with careful state management so whoever picks it up in later phases has an easier time.',
+    "The other half of me likes the low-level stuff. Some of my favourite projects are a shell and a chat server written in C, where you can't hide from a memory leak or a race condition. I also do hackathons, and my StormHacks projects have been a category runner-up two years in a row.",
   ],
   focus: ['Swift', 'SwiftUI', 'C / C++', 'Java', 'Python', 'JavaScript', 'AWS', 'Firebase', 'PostgreSQL', 'Docker'],
   contact: [
@@ -47,31 +47,26 @@ export const projects: Project[] = [
     title: 'Gauge',
     year: '2025',
     kind: 'iOS App',
-    tagline: 'Car maintenance tracker for enthusiasts',
+    tagline: "A logbook for your car that tells you what's due next",
     summary:
-      'A native iOS app for car enthusiasts to track services and modifications on their vehicles. It uses custom algorithms to recommend upcoming maintenance, and runs on a serverless AWS backend that I designed and manage myself.',
+      "Gauge is an iOS app for people who take their cars seriously. You log the services and the mods you've done, and the app suggests what maintenance should come next.",
     sections: [
       {
-        heading: 'The app',
+        heading: 'More than a list',
         body: [
-          'Built in SwiftUI, Gauge keeps a full history of every service and modification on each vehicle. Custom recommendation algorithms read that history and suggest what maintenance is coming due.',
+          "A plain service log only tells you what already happened. The interesting part is the recommendations. I wrote my own algorithms that work out what maintenance a car probably needs, so the app is useful before something goes wrong instead of after.",
         ],
       },
       {
-        heading: 'Serverless backend',
+        heading: 'Running my own backend',
         body: [
-          "I designed and run the backend on AWS DynamoDB. It returns API responses with low latency, and a NoSQL data model leaves room for the app's data to grow without rigid schema changes.",
-        ],
-      },
-      {
-        heading: 'Authentication & security',
-        body: [
-          "Sign-in runs through AWS Cognito and the AWS Mobile SDK. Custom IAM roles limit each user's access to their own cloud resources.",
+          "I designed the backend and look after it myself. It's serverless on AWS with DynamoDB for storage. Responses come back quickly, and since it's NoSQL I can change what a record holds as the app grows without migrating a schema every time.",
+          'Sign-in goes through AWS Cognito and the AWS Mobile SDK. I set up custom IAM roles so each account can only reach its own data in the cloud.',
         ],
       },
     ],
-    role: 'Solo developer',
-    timeline: 'Dec 2025 – Present',
+    role: 'Developer',
+    timeline: 'Dec 2025 to now',
     stack: ['Swift', 'SwiftUI', 'AWS DynamoDB', 'AWS Cognito', 'IAM'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover5,
@@ -81,26 +76,32 @@ export const projects: Project[] = [
     title: 'AI Caddy',
     year: '2026',
     kind: 'iOS App',
-    tagline: 'AI golf caddy and rangefinder',
+    tagline: 'Yardages and club picks, on your phone, mid-round',
     summary:
-      'A native iOS golf companion that gives real-time yardages on the course and recommends a club for each shot. It combines GPS course data, live weather and your own shot history, and reasons over them with the Gemini API.',
+      "A golf app that does two of a caddy's jobs. It tells you how far you are from the green, and it suggests which club to hit, based on how far you actually hit each one and what the weather is doing.",
     sections: [
       {
-        heading: 'Real-time yardages',
+        heading: 'Distances',
         body: [
-          'The app uses SwiftUI with an MVVM architecture and Swift concurrency (async/await). CoreLocation and GolfCourseAPI supply course coordinates, draw the layout of each hole and calculate accurate distances on the course.',
+          "The phone's location comes from CoreLocation, and course coordinates and hole layouts come from GolfCourseAPI. Put the two together and the app can draw the hole and give you an accurate number to the target while you're standing on the course.",
         ],
       },
       {
-        heading: 'Club recommendations',
+        heading: 'Picking a club',
         body: [
-          'Structured prompts to the Gemini API turn your calibrated yardages, live conditions such as wind and temperature, and your past rounds into a recommended club for each shot.',
-          'Club profiles and shot history are stored in Firebase Cloud Firestore, so recommendations get more personal the more you play.',
+          'For club recommendations I send Gemini a structured prompt with your own calibrated distance for each club, the current wind and temperature, and how your past rounds have gone. A generic chart would assume everyone hits a 7-iron the same distance. This uses your numbers.',
+          'Your clubs and shot history are stored in Firebase Cloud Firestore, so the suggestions get more personal the more you play.',
+        ],
+      },
+      {
+        heading: 'Under the hood',
+        body: [
+          "It's SwiftUI with an MVVM structure. Location updates, course data and the AI request all take time to come back, and Swift's async/await lets the app wait on them without freezing the screen.",
         ],
       },
     ],
-    role: 'Solo developer',
-    timeline: 'Jun 2026 – Present',
+    role: 'Developer',
+    timeline: 'Jun 2026 to now',
     stack: ['Swift', 'SwiftUI', 'CoreLocation', 'Firebase', 'Gemini API'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover6,
@@ -110,26 +111,26 @@ export const projects: Project[] = [
     title: 'The Archive',
     year: '2026',
     kind: 'Web App',
-    tagline: 'Screenshots in, interactive widgets out · StormHacks 2026',
+    tagline: 'A home for the screenshots you take and never look at again',
     summary:
-      "A web app built in 24 hours at StormHacks 2026. Drag in your screenshots and The Archive organises what's in them. Gemini analyses each one and generates an interactive widget for it, laid out in a responsive bento grid and a Rolodex-style view.",
+      "Everyone has a camera roll full of screenshots they took to remember something. The Archive gives them somewhere to go. You drag them in, and Gemini reads each one and turns it into a small interactive widget instead of leaving it as a flat image. It came together in 24 hours at StormHacks 2026.",
     sections: [
       {
-        heading: 'How it works',
+        heading: 'From picture to widget',
         body: [
-          'You drag screenshots onto the page to capture them. The Gemini API analyses each image and generates a working widget from its contents on the fly.',
-          'The widgets appear in a responsive bento grid and a Rolodex-style layout that work on both mobile and desktop.',
+          'A screenshot means something to the person who took it and nothing to a computer. Each upload goes to the Gemini API, which works out what it is and generates a widget for it on the fly, so you end up with something you can actually click on and use.',
         ],
       },
       {
-        heading: 'Recognition',
+        heading: 'Making it look right',
         body: [
-          'Runner-up for IATSU Best Design, for a polished, intuitive interface and a consistent experience across devices.',
+          'Widgets are laid out in a responsive bento grid with a Rolodex-style way to flip through them, and it works on both mobile and desktop.',
+          'It was runner-up for IATSU Best Design.',
         ],
       },
     ],
     role: 'Hackathon developer',
-    timeline: 'Oct 2026 · 24 hours',
+    timeline: 'Oct 2026, 24 hours',
     stack: ['React', 'Neon PostgreSQL', 'Gemini API'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover8,
@@ -139,24 +140,26 @@ export const projects: Project[] = [
     title: 'Meal4Me',
     year: '2025',
     kind: 'iOS App',
-    tagline: 'Photograph your ingredients, get a recipe · StormHacks 2025',
+    tagline: "Take a photo of what's in your fridge and get something to cook",
     summary:
-      'A native iOS app built in 24 hours at StormHacks 2025. You take a photo of the food you have, and Gemini identifies the ingredients and writes a recipe that uses them.',
+      "You point your phone at the food you have, and Meal4Me gives you a recipe that uses it. It's a native iOS app, built from nothing in 24 hours at StormHacks 2025.",
     sections: [
       {
-        heading: 'Multimodal recipes',
+        heading: 'How it works',
         body: [
-          "Meal4Me uses the Gemini API's multimodal capabilities to recognise food items in a photo, then generates a structured recipe based on those ingredients.",
-          'We went from idea to a working SwiftUI app within the 24-hour hackathon.',
+          "Gemini's multimodal model looks at the photo and picks out the ingredients. Then the app asks it for a recipe back as structured output rather than free-form text, so the app can lay it out cleanly in SwiftUI.",
         ],
       },
       {
-        heading: 'Recognition',
-        body: ['Runner-up for both Best Mobile App and Best Use of Gemini API.'],
+        heading: 'Against the clock',
+        body: [
+          "Twenty-four hours doesn't leave room for much, so the aim was a working MVP that does one thing well: photo in, recipe out.",
+          'It placed runner-up in two categories: Best Mobile App and Best Use of Gemini API.',
+        ],
       },
     ],
     role: 'Hackathon developer',
-    timeline: 'Oct 2025 · 24 hours',
+    timeline: 'Oct 2025, 24 hours',
     stack: ['Swift', 'SwiftUI', 'Gemini API'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover1,
@@ -166,25 +169,25 @@ export const projects: Project[] = [
     title: 'POSIX Shell',
     year: 'CMPT 210',
     kind: 'Systems',
-    tagline: 'A POSIX-compliant shell, written from scratch in C',
+    tagline: 'A Unix shell, written in C from an empty file',
     summary:
-      'A fully working POSIX-compliant shell written in C from scratch. It covers the low-level parts of an operating system: creating and managing processes, handling signals, managing memory and communicating between processes.',
+      "You use a shell every time you open a terminal, and it's easy to forget how much it's doing. I wrote one in C from scratch that follows the POSIX standard, which meant handling processes, signals, memory and communication between processes myself.",
     sections: [
       {
-        heading: 'Process control',
+        heading: 'What it does',
         body: [
-          'The shell supports foreground and background jobs, signal handling and built-in commands, with communication between processes for pipelines.',
+          "It runs programs in the foreground or the background, handles signals the way you'd expect, and has its own built-in commands. Each of those sounds small, but each one taught me something about how the operating system manages processes.",
         ],
       },
       {
-        heading: 'Memory discipline',
+        heading: 'No leaks',
         body: [
-          'Every allocation has a clear owner and every resource is cleaned up. I checked the shell for leaks with Valgrind and debugged it with CGDB.',
+          'In C nothing cleans up after you. I used Valgrind to check that every allocation was freed and every resource was closed, and stepped through the harder bugs in CGDB until the shell ran clean.',
         ],
       },
     ],
     role: 'Developer',
-    timeline: 'Fall term · SFU',
+    timeline: 'Fall term, SFU',
     stack: ['C', 'POSIX', 'Linux', 'Valgrind', 'CGDB'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover7,
@@ -194,25 +197,25 @@ export const projects: Project[] = [
     title: 'Cube Solver',
     year: 'CMPT 225',
     kind: 'Algorithms',
-    tagline: "Optimal Rubik's Cube solutions in under 20 moves",
+    tagline: "Solving a Rubik's Cube in under 20 moves",
     summary:
-      "A Rubik's Cube solver in Java that consistently finds optimal solutions in under 20 moves without running out of heap memory.",
+      "A Rubik's Cube can be scrambled in about 43 quintillion ways. My Java solver finds a way back in under 20 moves, and it does it without running out of Java heap space.",
     sections: [
       {
-        heading: 'Search',
+        heading: 'Searching smart',
         body: [
-          'The solver uses the IDA* search algorithm, guided by a pre-generated pattern database that serves as an admissible heuristic.',
+          "Searching every possible sequence of moves would never finish. The solver uses IDA*, a search that goes deeper step by step. It's guided by a pattern database I generated ahead of time, which gives a lower bound on how many moves a position still needs. That bound tells the search which paths aren't worth exploring.",
         ],
       },
       {
-        heading: 'Optimisation',
+        heading: 'Staying inside the heap',
         body: [
-          "A custom version of Kociemba's Two-Phase Algorithm narrows the search, which significantly reduces both computation time and memory use.",
+          "Search trees for a cube get big fast, and Java's heap has a ceiling. To stay under it I wrote my own variation of Kociemba's Two-Phase Algorithm, which splits the problem into two smaller searches. That cut down both the work and the memory the solver needed.",
         ],
       },
     ],
     role: 'Developer',
-    timeline: 'Fall term · SFU',
+    timeline: 'Fall term, SFU',
     stack: ['Java', 'IDA*', 'Pattern databases'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover2,
@@ -222,25 +225,25 @@ export const projects: Project[] = [
     title: 'Groupchat',
     year: 'CMPT 210',
     kind: 'Networking',
-    tagline: 'Multi-client chat over TCP, written in C',
+    tagline: 'A chat server in C, built straight on TCP sockets',
     summary:
-      'A chat system in C where many clients connect at once to a server, which broadcasts each message to everyone in real time. It is built on TCP sockets and POSIX threads.',
+      "A group chat where lots of people can be connected at once and everyone sees each message the moment it's sent. There's no framework underneath, just TCP sockets and POSIX threads.",
     sections: [
       {
-        heading: 'Protocol',
+        heading: 'A protocol of my own',
         body: [
-          'A custom application-layer protocol handles connecting, identifying each client, checking message integrity and disconnecting cleanly.',
+          "TCP gets bytes from one machine to another, and that's all it does. On top of it I designed a small protocol of my own that handles joining, working out who sent what, checking messages arrive intact, and letting people leave without breaking things for everyone else.",
         ],
       },
       {
-        heading: 'Concurrency',
+        heading: 'Threads that share',
         body: [
-          'A thread-safe message queue, guarded by a mutex, prevents race conditions while messages are broadcast to the server and the other clients.',
+          'The server uses POSIX threads to handle clients at the same time, and they all write to the same message queue. Without care, two messages land at the same moment and one gets lost or mangled. A mutex lock around the queue makes sure only one thread touches it at a time.',
         ],
       },
     ],
     role: 'Developer',
-    timeline: 'Fall term · SFU',
+    timeline: 'Fall term, SFU',
     stack: ['C', 'TCP sockets', 'pthreads', 'CGDB'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover4,
@@ -250,24 +253,27 @@ export const projects: Project[] = [
     title: 'Ascend',
     year: 'CMPT 276',
     kind: 'Web App',
-    tagline: 'Full-stack fitness tracker, built as an Agile team',
+    tagline: 'A full-stack fitness tracker, built by a team in sprints',
     summary:
-      'A full-stack fitness tracking web app built by a team working in Agile sprints. We held scrum meetings and sprint planning, reviewed each other\'s code, and used a Git workflow of branches and pull requests.',
+      'Ascend is a full-stack fitness tracking web app. It was a team project, so a lot of what I got out of it was how to build software with other people.',
     sections: [
       {
-        heading: 'Backend',
+        heading: 'Working as a team',
         body: [
-          'I built RESTful APIs for the core tracking features in Spring Boot. Integration tests with MockMvc and Spring Data JPA kept the backend stable and the data correct.',
+          "We ran it in Agile sprints with scrum meetings and sprint planning. Changes went up as pull requests and got reviewed before they merged. You learn a lot about Git the first time two people edit the same file and you have to sort out the merge conflict.",
         ],
       },
       {
-        heading: 'Deployment',
-        body: ['The app runs in a Docker container, which makes hosting and deploying it on Render automatic.'],
+        heading: 'My part',
+        body: [
+          'I worked on the Spring Boot backend, building the REST APIs behind the tracking features. I wrote integration tests with MockMvc and Spring Data JPA so we would hear about broken data or a failing endpoint before anyone using the app did.',
+          'I containerized the app with Docker and hosted it on Render, so new versions deployed automatically.',
+        ],
       },
     ],
     role: 'Team developer',
-    timeline: 'Spring term · SFU',
-    stack: ['Spring Boot', 'Java', 'JavaScript', 'Docker', 'Render'],
+    timeline: 'Spring term, SFU',
+    stack: ['Spring Boot', 'Java', 'JavaScript', 'HTML/CSS', 'Docker', 'Render'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover3,
   },
