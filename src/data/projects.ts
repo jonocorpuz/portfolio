@@ -1,5 +1,3 @@
-// TODO(jono): replace with real projects
-
 import type { AboutInfo, Project, SiteInfo } from '../types'
 import cover1 from '../assets/covers/cover-1-coral-red.webp'
 import cover2 from '../assets/covers/cover-2-blue-pink.webp'
@@ -10,281 +8,267 @@ import cover6 from '../assets/covers/cover-6-teal-green.webp'
 import cover7 from '../assets/covers/cover-7-indigo-magenta.webp'
 import cover8 from '../assets/covers/cover-8-monochrome-silver.webp'
 
+const GITHUB = 'https://github.com/jonocorpuz'
+const LINKEDIN = 'https://www.linkedin.com/in/jonathan-corpuz/'
+const RESUME = `${import.meta.env.BASE_URL}resume.pdf`
+
 export const site: SiteInfo = {
   name: 'Jono Corpuz',
-  blurb: "A slate of software I've designed, built and shipped — from side projects to production systems.",
+  blurb: "A slate of software I've designed, built and shipped — from iOS apps to systems code in C.",
   links: [
     { label: 'about', href: '#/about' },
-    { label: 'github', href: 'https://github.com/' },
+    { label: 'github', href: GITHUB },
     // TODO(jono): drop resume.pdf into public/ (see README)
-    { label: 'resume', href: `${import.meta.env.BASE_URL}resume.pdf` },
+    { label: 'resume', href: RESUME },
   ],
 }
 
-// TODO(jono): replace the placeholder bio + contact links with real ones.
 export const about: AboutInfo = {
-  tagline: 'Software engineer who likes the whole stack — and the details in it.',
+  tagline: 'iOS engineer and Computing Science student at Simon Fraser University.',
   bio: [
-    "I'm Jono, a software engineer who enjoys turning fuzzy problems into well-built, carefully finished products. Most of my work lives somewhere between the browser and the backend: product interfaces, data-heavy tools and the services behind them.",
-    'I care about the parts people feel but rarely name — fast load times, interactions that respond the way you expect, and code the next engineer can pick up without a tour.',
-    'Outside of work I tinker with side projects, read more about systems design than is probably healthy, and keep a running list of small tools I want to exist.',
+    "I'm Jono, a software engineer in Vancouver studying Computing Science at SFU. I like building native apps that feel effortless to use, and I'm just as happy down at the systems level writing C against POSIX.",
+    'At Back On Stage I worked as an iOS Software Engineer on the native SwiftUI companion app for an established B2B SaaS platform. I turned complex web workflows, originally built in PHP and React, into native mobile experiences on top of existing REST APIs and AWS infrastructure, using MVVM so later phases are easy to build on.',
+    'Outside of work I build iOS apps for things I care about, like cars and golf, and I compete in hackathons. I placed runner-up at StormHacks in both 2025 and 2026.',
   ],
-  focus: ['TypeScript', 'React', 'Node.js', 'Python', 'Postgres', 'Cloud infrastructure'],
+  focus: ['Swift', 'SwiftUI', 'C / C++', 'Java', 'Python', 'JavaScript', 'AWS', 'Firebase', 'PostgreSQL', 'Docker'],
   contact: [
-    { label: 'Email', href: 'mailto:hello@example.com' },
-    { label: 'GitHub', href: 'https://github.com/' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-    { label: 'Resume', href: `${import.meta.env.BASE_URL}resume.pdf` },
+    { label: 'Email', href: 'mailto:jonocorpuz@gmail.com' },
+    { label: 'GitHub', href: GITHUB },
+    { label: 'LinkedIn', href: LINKEDIN },
+    { label: 'Resume', href: RESUME },
   ],
 }
 
+// TODO(jono): swap the GitHub profile links below for each project's repo URL,
+// and add { label: 'Live', href } / App Store links where they exist.
 export const projects: Project[] = [
   {
-    slug: 'synthwave',
-    title: 'Synthwave',
-    year: '2024',
-    kind: 'Web App',
-    tagline: 'Real-time collaborative music production platform',
-    summary: 'A browser-based DAW enabling musicians to collaborate in real-time across continents. Features low-latency audio streaming, synchronized editing, and a modular plugin architecture.',
+    slug: 'gauge',
+    title: 'Gauge',
+    year: '2025',
+    kind: 'iOS App',
+    tagline: 'Car maintenance tracker for enthusiasts',
+    summary:
+      'A native iOS app for car enthusiasts to track services and modifications on their vehicles. It uses custom algorithms to recommend upcoming maintenance, and runs on a serverless AWS backend that I designed and manage myself.',
     sections: [
       {
-        heading: 'Architecture',
+        heading: 'The app',
         body: [
-          'Built with WebAudio API for client-side synthesis and Rust backend for low-latency server-to-server audio routing. Uses WebRTC for peer connections and CRDT for conflict-free collaborative editing.',
-          'The system handles 1000+ concurrent connections with sub-100ms latency, utilizing a distributed architecture across multiple availability zones.',
+          'Built in SwiftUI, Gauge keeps a full history of every service and modification on each vehicle. Custom recommendation algorithms read that history and suggest what maintenance is coming due.',
         ],
       },
       {
-        heading: 'Impact',
+        heading: 'Serverless backend',
         body: [
-          'Enables remote music production with professional-grade latency. Used by 200+ creators in the first month of beta.',
-        ],
-      },
-    ],
-    role: 'Full-stack Engineer',
-    timeline: 'Mar 2024 – Aug 2024',
-    stack: ['React', 'TypeScript', 'Rust', 'WebAudio', 'WebRTC'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
-    ],
-    cover: cover1,
-  },
-  {
-    slug: 'dataflow',
-    title: 'Dataflow',
-    year: '2023',
-    kind: 'Dev Tool',
-    tagline: 'Visual dataflow programming environment',
-    summary: 'A node-based visual programming tool for designing data pipelines without writing code. Integrates with popular data platforms and supports custom transformations.',
-    sections: [
-      {
-        heading: 'Features',
-        body: [
-          'Drag-and-drop interface for composing data transformations. Real-time preview of data flowing through nodes.',
-          'Supports 50+ integrations with data sources and destinations including SQL databases, APIs, and cloud storage.',
+          "I designed and run the backend on AWS DynamoDB. It returns API responses with low latency, and a NoSQL data model leaves room for the app's data to grow without rigid schema changes.",
         ],
       },
       {
-        heading: 'Performance',
+        heading: 'Authentication & security',
         body: [
-          'Handles petabyte-scale datasets with optimized execution plans. Custom graph compiler generates efficient execution DAGs.',
+          "Sign-in runs through AWS Cognito and the AWS Mobile SDK. Custom IAM roles limit each user's access to their own cloud resources.",
         ],
       },
     ],
-    role: 'Product Engineer',
-    timeline: 'Jan 2023 – Jun 2023',
-    stack: ['React', 'D3.js', 'Python', 'GraphQL', 'PostgreSQL'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
-    ],
-    cover: cover2,
-  },
-  {
-    slug: 'nexus-ml',
-    title: 'Nexus ML',
-    year: '2022',
-    kind: 'ML Pipeline',
-    tagline: 'Distributed training platform for computer vision models',
-    summary: 'Infrastructure for training large-scale vision models across GPU clusters. Provides automated data preprocessing, distributed training, and model serving.',
-    sections: [
-      {
-        heading: 'Capabilities',
-        body: [
-          'Supports training on 100+ GPU nodes with 95% efficiency. Built-in support for common architectures and transfer learning.',
-          'Includes hyperparameter search, experiment tracking, and automated model versioning.',
-        ],
-      },
-      {
-        heading: 'Results',
-        body: [
-          'Reduced model training time by 70% compared to manual setup. Used internally to train models reaching 95%+ accuracy on benchmark datasets.',
-        ],
-      },
-    ],
-    role: 'ML Infrastructure Engineer',
-    timeline: 'May 2022 – Dec 2022',
-    stack: ['Python', 'PyTorch', 'Kubernetes', 'CUDA', 'Go'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
-    ],
-    cover: cover3,
-  },
-  {
-    slug: 'mobile-auth',
-    title: 'MobileAuth',
-    year: '2024',
-    kind: 'Mobile App',
-    tagline: 'Passwordless authentication system for iOS and Android',
-    summary: 'Native mobile application providing biometric and push-notification based authentication. Supports both native app and web authentication flows.',
-    sections: [
-      {
-        heading: 'Implementation',
-        body: [
-          'Built with SwiftUI and Kotlin Compose for native feel. Uses device secure enclave for cryptographic operations.',
-          'Integrates with OAuth 2.0 and OIDC protocols for seamless third-party app authentication.',
-        ],
-      },
-      {
-        heading: 'Security',
-        body: [
-          'Zero-knowledge architecture means servers never see user biometrics. All cryptographic operations happen on-device.',
-        ],
-      },
-    ],
-    role: 'Mobile Lead',
-    timeline: 'Sep 2023 – Apr 2024',
-    stack: ['Swift', 'Kotlin', 'WebAuthn', 'Firebase', 'Node.js'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
-    ],
-    cover: cover4,
-  },
-  {
-    slug: 'meshnet',
-    title: 'MeshNet',
-    year: '2021',
-    kind: 'Distributed System',
-    tagline: 'P2P mesh networking protocol and SDK',
-    summary: 'Protocol and library enabling direct peer-to-peer communication with automatic NAT traversal. Suitable for building decentralized applications.',
-    sections: [
-      {
-        heading: 'Technology',
-        body: [
-          'Implements custom gossip protocol for network discovery. Uses hole punching and relay servers for NAT traversal.',
-          'Achieves 99.9% uptime with automatic failover and network reconnection.',
-        ],
-      },
-      {
-        heading: 'Adoption',
-        body: [
-          'Published as open-source library with 500+ GitHub stars. Used in production by 15+ projects.',
-        ],
-      },
-    ],
-    role: 'Protocol Designer',
-    timeline: 'Feb 2021 – Aug 2021',
-    stack: ['Rust', 'Tokio', 'WebAssembly', 'Protocol Buffers'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
-    ],
+    role: 'Solo developer',
+    timeline: 'Dec 2025 – Present',
+    stack: ['Swift', 'SwiftUI', 'AWS DynamoDB', 'AWS Cognito', 'IAM'],
+    links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover5,
   },
   {
-    slug: 'cli-forge',
-    title: 'CLI Forge',
-    year: '2023',
-    kind: 'CLI Tool',
-    tagline: 'Framework for building composable command-line tools',
-    summary: 'Developer framework simplifying creation of professional CLI applications with automatic shell completion, interactive prompts, and rich output formatting.',
+    slug: 'ai-caddy',
+    title: 'AI Caddy',
+    year: '2026',
+    kind: 'iOS App',
+    tagline: 'AI golf caddy and rangefinder',
+    summary:
+      'A native iOS golf companion that gives real-time yardages on the course and recommends a club for each shot. It combines GPS course data, live weather and your own shot history, and reasons over them with the Gemini API.',
     sections: [
       {
-        heading: 'Developer Experience',
+        heading: 'Real-time yardages',
         body: [
-          'Define CLIs as composable command trees with automatic help generation. Built-in support for config files, environment variables, and secrets management.',
-          'Generates bash, zsh, and fish completions automatically.',
+          'The app uses SwiftUI with an MVVM architecture and Swift concurrency (async/await). CoreLocation and GolfCourseAPI supply course coordinates, draw the layout of each hole and calculate accurate distances on the course.',
         ],
       },
       {
-        heading: 'Adoption',
+        heading: 'Club recommendations',
         body: [
-          'Used internally by 50+ command-line tools. Open-sourced with 1000+ weekly downloads.',
+          'Structured prompts to the Gemini API turn your calibrated yardages, live conditions such as wind and temperature, and your past rounds into a recommended club for each shot.',
+          'Club profiles and shot history are stored in Firebase Cloud Firestore, so recommendations get more personal the more you play.',
         ],
       },
     ],
-    role: 'Framework Author',
-    timeline: 'Jul 2023 – Nov 2023',
-    stack: ['Go', 'Cobra', 'YAML', 'Bash'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
-    ],
+    role: 'Solo developer',
+    timeline: 'Jun 2026 – Present',
+    stack: ['Swift', 'SwiftUI', 'CoreLocation', 'Firebase', 'Gemini API'],
+    links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover6,
   },
   {
-    slug: 'game-engine',
-    title: 'SilverEngine',
-    year: '2020',
-    kind: 'Game Engine',
-    tagline: '2D game engine with ECS architecture',
-    summary: 'Lightweight game engine for 2D games built on entity-component-system architecture. Includes physics, sprite rendering, and audio systems.',
+    slug: 'the-archive',
+    title: 'The Archive',
+    year: '2026',
+    kind: 'Web App',
+    tagline: 'Screenshots in, interactive widgets out · StormHacks 2026',
+    summary:
+      "A web app built in 24 hours at StormHacks 2026. Drag in your screenshots and The Archive organises what's in them. Gemini analyses each one and generates an interactive widget for it, laid out in a responsive bento grid and a Rolodex-style view.",
     sections: [
       {
-        heading: 'Architecture',
+        heading: 'How it works',
         body: [
-          'Pure ECS design for maximum flexibility and performance. SIMD-optimized systems for transform updates and physics calculations.',
-          'Supports both pixel art and vector rendering.',
+          'You drag screenshots onto the page to capture them. The Gemini API analyses each image and generates a working widget from its contents on the fly.',
+          'The widgets appear in a responsive bento grid and a Rolodex-style layout that work on both mobile and desktop.',
         ],
       },
       {
-        heading: 'Games',
+        heading: 'Recognition',
         body: [
-          'Used by indie developers to ship 10+ games on Steam. Average frame rate 120 FPS on mid-range hardware.',
+          'Runner-up for IATSU Best Design, for a polished, intuitive interface and a consistent experience across devices.',
         ],
       },
     ],
-    role: 'Engine Developer',
-    timeline: 'Jan 2020 – Sep 2020',
-    stack: ['Rust', 'WebGPU', 'Rapier', 'SDL2'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
+    role: 'Hackathon developer',
+    timeline: 'Oct 2026 · 24 hours',
+    stack: ['React', 'Neon PostgreSQL', 'Gemini API'],
+    links: [{ label: 'GitHub', href: GITHUB }],
+    cover: cover8,
+  },
+  {
+    slug: 'meal4me',
+    title: 'Meal4Me',
+    year: '2025',
+    kind: 'iOS App',
+    tagline: 'Photograph your ingredients, get a recipe · StormHacks 2025',
+    summary:
+      'A native iOS app built in 24 hours at StormHacks 2025. You take a photo of the food you have, and Gemini identifies the ingredients and writes a recipe that uses them.',
+    sections: [
+      {
+        heading: 'Multimodal recipes',
+        body: [
+          "Meal4Me uses the Gemini API's multimodal capabilities to recognise food items in a photo, then generates a structured recipe based on those ingredients.",
+          'We went from idea to a working SwiftUI app within the 24-hour hackathon.',
+        ],
+      },
+      {
+        heading: 'Recognition',
+        body: ['Runner-up for both Best Mobile App and Best Use of Gemini API.'],
+      },
     ],
+    role: 'Hackathon developer',
+    timeline: 'Oct 2025 · 24 hours',
+    stack: ['Swift', 'SwiftUI', 'Gemini API'],
+    links: [{ label: 'GitHub', href: GITHUB }],
+    cover: cover1,
+  },
+  {
+    slug: 'posix-shell',
+    title: 'POSIX Shell',
+    year: 'CMPT 210',
+    kind: 'Systems',
+    tagline: 'A POSIX-compliant shell, written from scratch in C',
+    summary:
+      'A fully working POSIX-compliant shell written in C from scratch. It covers the low-level parts of an operating system: creating and managing processes, handling signals, managing memory and communicating between processes.',
+    sections: [
+      {
+        heading: 'Process control',
+        body: [
+          'The shell supports foreground and background jobs, signal handling and built-in commands, with communication between processes for pipelines.',
+        ],
+      },
+      {
+        heading: 'Memory discipline',
+        body: [
+          'Every allocation has a clear owner and every resource is cleaned up. I checked the shell for leaks with Valgrind and debugged it with CGDB.',
+        ],
+      },
+    ],
+    role: 'Developer',
+    timeline: 'Fall term · SFU',
+    stack: ['C', 'POSIX', 'Linux', 'Valgrind', 'CGDB'],
+    links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover7,
   },
   {
-    slug: 'analytics-viz',
-    title: 'Analytics Viz',
-    year: '2024',
-    kind: 'Data Visualization',
-    tagline: 'Interactive analytics dashboard for real-time metrics',
-    summary: 'Web-based dashboard for visualizing and analyzing business metrics in real-time. Supports custom queries, alerts, and collaborative annotations.',
+    slug: 'cube-solver',
+    title: 'Cube Solver',
+    year: 'CMPT 225',
+    kind: 'Algorithms',
+    tagline: "Optimal Rubik's Cube solutions in under 20 moves",
+    summary:
+      "A Rubik's Cube solver in Java that consistently finds optimal solutions in under 20 moves without running out of heap memory.",
     sections: [
       {
-        heading: 'Performance',
+        heading: 'Search',
         body: [
-          'Handles millions of data points with GPU-accelerated rendering. Queries execute in under 500ms even on large datasets.',
-          'WebGL-based rendering ensures smooth interactions even with dense data.',
+          'The solver uses the IDA* search algorithm, guided by a pre-generated pattern database that serves as an admissible heuristic.',
         ],
       },
       {
-        heading: 'Features',
+        heading: 'Optimisation',
         body: [
-          'Customizable widgets and dashboards. Real-time alerts and anomaly detection. Collaborative commenting and sharing.',
+          "A custom version of Kociemba's Two-Phase Algorithm narrows the search, which significantly reduces both computation time and memory use.",
         ],
       },
     ],
-    role: 'Full-stack Engineer',
-    timeline: 'Feb 2024 – Present',
-    stack: ['React', 'WebGL', 'TypeScript', 'PostgreSQL', 'TimescaleDB'],
-    links: [
-      { label: 'GitHub', href: 'https://github.com/' },
-      { label: 'Live', href: 'https://example.com' },
+    role: 'Developer',
+    timeline: 'Fall term · SFU',
+    stack: ['Java', 'IDA*', 'Pattern databases'],
+    links: [{ label: 'GitHub', href: GITHUB }],
+    cover: cover2,
+  },
+  {
+    slug: 'groupchat',
+    title: 'Groupchat',
+    year: 'CMPT 210',
+    kind: 'Networking',
+    tagline: 'Multi-client chat over TCP, written in C',
+    summary:
+      'A chat system in C where many clients connect at once to a server, which broadcasts each message to everyone in real time. It is built on TCP sockets and POSIX threads.',
+    sections: [
+      {
+        heading: 'Protocol',
+        body: [
+          'A custom application-layer protocol handles connecting, identifying each client, checking message integrity and disconnecting cleanly.',
+        ],
+      },
+      {
+        heading: 'Concurrency',
+        body: [
+          'A thread-safe message queue, guarded by a mutex, prevents race conditions while messages are broadcast to the server and the other clients.',
+        ],
+      },
     ],
-    cover: cover8,
+    role: 'Developer',
+    timeline: 'Fall term · SFU',
+    stack: ['C', 'TCP sockets', 'pthreads', 'CGDB'],
+    links: [{ label: 'GitHub', href: GITHUB }],
+    cover: cover4,
+  },
+  {
+    slug: 'ascend',
+    title: 'Ascend',
+    year: 'CMPT 276',
+    kind: 'Web App',
+    tagline: 'Full-stack fitness tracker, built as an Agile team',
+    summary:
+      'A full-stack fitness tracking web app built by a team working in Agile sprints. We held scrum meetings and sprint planning, reviewed each other\'s code, and used a Git workflow of branches and pull requests.',
+    sections: [
+      {
+        heading: 'Backend',
+        body: [
+          'I built RESTful APIs for the core tracking features in Spring Boot. Integration tests with MockMvc and Spring Data JPA kept the backend stable and the data correct.',
+        ],
+      },
+      {
+        heading: 'Deployment',
+        body: ['The app runs in a Docker container, which makes hosting and deploying it on Render automatic.'],
+      },
+    ],
+    role: 'Team developer',
+    timeline: 'Spring term · SFU',
+    stack: ['Spring Boot', 'Java', 'JavaScript', 'Docker', 'Render'],
+    links: [{ label: 'GitHub', href: GITHUB }],
+    cover: cover3,
   },
 ]

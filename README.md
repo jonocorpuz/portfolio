@@ -52,8 +52,9 @@ the home page and to a 110px banner on project pages). Add a new file there and 
 
 - [ ] Drop your resume into `public/resume.pdf` — the header "resume" link and the About page
       point at it.
-- [ ] Replace the placeholder projects, About bio and contact links in `src/data/projects.ts`
-      (marked `TODO(jono)`).
+- [x] Real projects, About bio and contact links in `src/data/projects.ts`.
+- [ ] Point each project's GitHub link at its repo (they currently link to the profile), and add
+      Live / App Store links where they exist (marked `TODO(jono)`).
 - [ ] Add `og:url` and an absolute `og:image` in `index.html` once the site has a URL.
 
 ## Routes
