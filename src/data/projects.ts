@@ -44,8 +44,9 @@ export const projects: Project[] = [
   {
     slug: 'backonstage',
     title: 'BackOnStage',
+    label: 'iOS Software Engineer',
     year: '2026',
-    kind: 'Work',
+    kind: 'Software Development Team',
     tagline: 'Taking an established web platform native on iPhone',
     summary:
       'From January to August 2026 I was an iOS Software Engineer at Back On Stage in Vancouver. The company runs an established B2B SaaS platform, and I helped build its native iOS companion app in SwiftUI. I worked on it end to end, from how the app is put together to the screens people actually use.',
@@ -79,8 +80,9 @@ export const projects: Project[] = [
   {
     slug: 'ascend',
     title: 'Ascend',
-    year: 'CMPT 276',
-    kind: 'Web App',
+    label: 'CMPT 276 Project',
+    year: '2026',
+    kind: 'Spring Web',
     tagline: 'A full-stack fitness tracker, built by a team in sprints',
     summary:
       'Ascend is a full-stack fitness tracking web app. It was a team project, so a lot of what I got out of it was how to build software with other people.',
@@ -100,7 +102,7 @@ export const projects: Project[] = [
       },
     ],
     role: 'Team developer',
-    timeline: 'Spring term, SFU',
+    timeline: 'Spring 2026, SFU',
     stack: ['Spring Boot', 'Java', 'JavaScript', 'HTML/CSS', 'Docker', 'Render'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover3,
@@ -108,8 +110,9 @@ export const projects: Project[] = [
   {
     slug: 'gauge',
     title: 'Gauge',
+    label: 'Project',
     year: '2025',
-    kind: 'iOS App',
+    kind: 'iOS SwiftUI App',
     tagline: "A logbook for your car that tells you what's due next",
     summary:
       "Gauge is an iOS app for people who take their cars seriously. You log the services and the mods you've done, and the app suggests what maintenance should come next.",
@@ -137,8 +140,9 @@ export const projects: Project[] = [
   {
     slug: 'vibecaddy',
     title: 'VibeCaddy',
+    label: 'Project',
     year: '2026',
-    kind: 'iOS App',
+    kind: 'SwiftUI App',
     tagline: 'Yardages and club picks, on your phone, mid-round',
     summary:
       "A golf app that does two of a caddy's jobs. It tells you how far you are from the green, and it suggests which club to hit, based on how far you actually hit each one and what the weather is doing.",
@@ -172,8 +176,9 @@ export const projects: Project[] = [
   {
     slug: 'the-archive',
     title: 'The Archive',
+    label: 'StormHacks Hackathon',
     year: '2026',
-    kind: 'Web App',
+    kind: 'React Web App',
     tagline: 'A home for the screenshots you take and never look at again',
     summary:
       "Everyone has a camera roll full of screenshots they took to remember something. The Archive gives them somewhere to go. You drag them in, and Gemini reads each one and turns it into a small interactive widget instead of leaving it as a flat image. It came together in 24 hours at StormHacks 2026.",
@@ -201,8 +206,9 @@ export const projects: Project[] = [
   {
     slug: 'meal4me',
     title: 'Meal4Me',
+    label: 'StormHacks Hackathon',
     year: '2025',
-    kind: 'iOS App',
+    kind: 'SwiftUI App',
     tagline: "Take a photo of what's in your fridge and get something to cook",
     summary:
       "You point your phone at the food you have, and Meal4Me gives you a recipe that uses it. It's a native iOS app, built from nothing in 24 hours at StormHacks 2025.",
@@ -230,8 +236,9 @@ export const projects: Project[] = [
   {
     slug: 'posix-shell',
     title: 'POSIX Shell in C',
-    year: 'CMPT 210',
-    kind: 'Systems',
+    label: 'CMPT 210 Project',
+    year: '2025',
+    kind: 'C Systems',
     tagline: 'A Unix shell, written in C from an empty file',
     summary:
       "You use a shell every time you open a terminal, and it's easy to forget how much it's doing. I wrote one in C from scratch that follows the POSIX standard, which meant handling processes, signals, memory and communication between processes myself.",
@@ -250,7 +257,7 @@ export const projects: Project[] = [
       },
     ],
     role: 'Developer',
-    timeline: 'Fall term, SFU',
+    timeline: 'Fall 2025, SFU',
     stack: ['C', 'POSIX', 'Linux', 'Valgrind', 'CGDB'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover7,
@@ -258,8 +265,9 @@ export const projects: Project[] = [
   {
     slug: 'cube-solver',
     title: "Rubik's Cube Solver with IDA*",
-    year: 'CMPT 225',
-    kind: 'Algorithms',
+    label: 'CMPT 225 Project',
+    year: '2025',
+    kind: 'Java Data Structures & Algorithms',
     tagline: "Solving a Rubik's Cube in under 20 moves",
     summary:
       "A Rubik's Cube can be scrambled in about 43 quintillion ways. My Java solver finds a way back in under 20 moves, and it does it without running out of Java heap space.",
@@ -278,7 +286,7 @@ export const projects: Project[] = [
       },
     ],
     role: 'Developer',
-    timeline: 'Fall term, SFU',
+    timeline: 'Fall 2025, SFU',
     stack: ['Java', 'IDA*', 'Pattern databases'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover2,
@@ -286,8 +294,9 @@ export const projects: Project[] = [
   {
     slug: 'groupchat',
     title: 'TCP Groupchat in C',
-    year: 'CMPT 210',
-    kind: 'Networking',
+    label: 'CMPT 210 Project',
+    year: '2025',
+    kind: 'C Networking',
     tagline: 'A chat server in C, built straight on TCP sockets',
     summary:
       "A group chat where lots of people can be connected at once and everyone sees each message the moment it's sent. There's no framework underneath, just TCP sockets and POSIX threads.",
@@ -306,7 +315,7 @@ export const projects: Project[] = [
       },
     ],
     role: 'Developer',
-    timeline: 'Fall term, SFU',
+    timeline: 'Fall 2025, SFU',
     stack: ['C', 'TCP sockets', 'pthreads', 'CGDB'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover4,

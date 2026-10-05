@@ -11,6 +11,7 @@ export interface ProjectSection {
 export interface Project {
   slug: string
   title: string
+  label: string
   year: string
   kind: string
   tagline: string
