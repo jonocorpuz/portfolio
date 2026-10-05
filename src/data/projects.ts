@@ -82,7 +82,7 @@ export const projects: Project[] = [
     title: 'Ascend',
     label: 'CMPT 276 Project',
     year: '2026',
-    kind: 'Spring Web',
+    kind: 'Spring Web App',
     tagline: 'A full-stack fitness tracker, built by a team in sprints',
     summary:
       'Ascend is a full-stack fitness tracking web app. It was a team project, so a lot of what I got out of it was how to build software with other people.',
@@ -142,7 +142,7 @@ export const projects: Project[] = [
     title: 'VibeCaddy',
     label: 'Project',
     year: '2026',
-    kind: 'SwiftUI App',
+    kind: 'iOS SwiftUI App',
     tagline: 'Yardages and club picks, on your phone, mid-round',
     summary:
       "A golf app that does two of a caddy's jobs. It tells you how far you are from the green, and it suggests which club to hit, based on how far you actually hit each one and what the weather is doing.",
