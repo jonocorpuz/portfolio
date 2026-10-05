@@ -47,6 +47,11 @@ export function Footer({ project, index, total }: { project: Project; index: num
   const y = reduce ? 0 : 10
   return (
     <footer className="pointer-events-none fixed inset-x-0 bottom-0 z-40 grid grid-cols-[1fr_auto_1fr] items-end gap-4 px-[18px] pb-[18px] text-[13px] tracking-[-0.02em] text-white sm:px-10 sm:pb-7">
+      {/* Floor fade: the falling card's mirrored "reflection" dissolves before it reaches the footer text. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 -z-10 h-[170px] bg-gradient-to-t from-black from-45% to-transparent sm:h-[190px]"
+      />
       <div className="min-w-0 leading-tight">
         <div className="font-semibold">Project</div>
         <div className="truncate text-white/55">
