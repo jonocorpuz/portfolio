@@ -18,19 +18,19 @@ export function Header({
   const shadow = overlay ? { textShadow: '0 1px 12px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.35)' } : undefined
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 flex items-start justify-between px-[18px] py-[18px] text-[14px] font-medium tracking-[-0.02em] text-white sm:px-10 sm:py-7"
+      className="fixed inset-x-0 top-0 z-50 flex items-start justify-between gap-4 px-[18px] py-[18px] text-[13px] sm:text-[14px] font-medium tracking-[-0.02em] text-white sm:px-10 sm:py-7"
       style={shadow}
     >
       {onHome ? (
-        <button type="button" onClick={onHome} className={`cursor-pointer transition-opacity hover:opacity-70 ${ring}`}>
+        <button type="button" onClick={onHome} className={`cursor-pointer whitespace-nowrap hover:opacity-70 ${ring}`}>
           {site.name}
         </button>
       ) : (
-        <a href="#/" className={`transition-opacity hover:opacity-70 ${ring}`}>
+        <a href="#/" className={`whitespace-nowrap hover:opacity-70 ${ring}`}>
           {site.name}
         </a>
       )}
-      <nav aria-label="Site links" className="flex gap-5">
+      <nav aria-label="Site links" className="flex gap-3 sm:gap-5">
         {site.links.map((l) => {
           const external = /^https?:/.test(l.href) || l.href.endsWith('.pdf')
           const isCurrent = l.label === current
@@ -40,7 +40,7 @@ export function Header({
               href={l.href}
               aria-current={isCurrent ? 'page' : undefined}
               {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-              className={`transition-opacity hover:opacity-60 ${isCurrent ? 'underline decoration-white/40 underline-offset-4' : ''} ${ring}`}
+              className={`hover:opacity-60 ${ring}`}
             >
               {l.label}
             </a>

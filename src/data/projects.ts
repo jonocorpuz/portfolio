@@ -10,23 +10,22 @@ import cover8 from '../assets/covers/cover-8-monochrome-silver.webp'
 
 const GITHUB = 'https://github.com/jonocorpuz'
 const LINKEDIN = 'https://www.linkedin.com/in/jonathan-corpuz/'
-const RESUME = `${import.meta.env.BASE_URL}resume.pdf`
 
 export const site: SiteInfo = {
-  name: 'Jono Corpuz',
+  name: 'Jonathan Corpuz',
   blurb: "Things I've built, from iOS apps to a shell written in C. Scroll to flip through, click one to read more.",
   links: [
+    { label: 'projects', href: '#/' },
     { label: 'about', href: '#/about' },
     { label: 'github', href: GITHUB },
-    // TODO(jono): drop resume.pdf into public/ (see README)
-    { label: 'resume', href: RESUME },
+    { label: 'linkedin', href: LINKEDIN },
   ],
 }
 
 export const about: AboutInfo = {
   tagline: 'I build iOS apps, and I like knowing what happens underneath them.',
   bio: [
-    "I'm Jono. I study Computing Science at Simon Fraser University and live in Vancouver.",
+    "I'm Jonathan. I study Computing Science at Simon Fraser University and live in Vancouver.",
     'Most of my own projects end up on an iPhone. From January to August 2026 I was an iOS software engineer at Back On Stage, helping build the native iOS app for a B2B SaaS platform that already ran on the web. A lot of that job was taking workflows that had grown up in PHP and React and figuring out how they should actually feel on a phone, then wiring them to the REST APIs and AWS services that were already there. We structured it around MVVM with careful state management so whoever picks it up in later phases has an easier time.',
     "The other half of me likes the low-level stuff. Some of my favourite projects are a shell and a chat server written in C, where you can't hide from a memory leak or a race condition. I also do hackathons, and my StormHacks projects have been a category runner-up two years in a row.",
   ],
@@ -35,7 +34,6 @@ export const about: AboutInfo = {
     { label: 'Email', href: 'mailto:jonocorpuz@gmail.com' },
     { label: 'GitHub', href: GITHUB },
     { label: 'LinkedIn', href: LINKEDIN },
-    { label: 'Resume', href: RESUME },
   ],
 }
 

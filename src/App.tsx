@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, LayoutGroup, motion, useIsPresent, useReducedMotion } from 'motion/react'
-import { projects } from './data/projects'
+import { projects, site } from './data/projects'
 import { Footer, Header } from './components/Chrome'
 import { Rolodex } from './components/Rolodex'
 import { ProjectView } from './components/ProjectView'
@@ -36,8 +36,8 @@ export default function App() {
   if (!isHome && !hasLeftHome) setHasLeftHome(true)
 
   useEffect(() => {
-    const base = 'Jono Corpuz — Software Engineer'
-    document.title = openProject ? `${openProject.title} — Jono Corpuz` : isAbout ? 'About — Jono Corpuz' : base
+    const base = `${site.name} — Software Engineer`
+    document.title = openProject ? `${openProject.title} — ${site.name}` : isAbout ? `About — ${site.name}` : base
   }, [openProject, isAbout])
 
   // Unknown slug -> home (clean the URL).
@@ -53,7 +53,7 @@ export default function App() {
 
   return (
     <>
-      <Header onHome={isHome ? undefined : close} overlay={!!openProject} current={isAbout ? 'about' : undefined} />
+      <Header onHome={isHome ? undefined : close} overlay={!!openProject} current={isAbout ? 'about' : 'projects'} />
       <LayoutGroup>
         <AnimatePresence>
           {openProject ? (

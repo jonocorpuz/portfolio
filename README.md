@@ -1,4 +1,4 @@
-# Jono Corpuz — Portfolio
+# Jonathan Corpuz — Portfolio
 
 A modern portfolio site showcasing software engineering projects. Built with Vite, React, TypeScript, Tailwind CSS, and Motion (Framer Motion).
 
@@ -50,8 +50,6 @@ the home page and to a 110px banner on project pages). Add a new file there and 
 
 ## TODO before deploying
 
-- [ ] Drop your resume into `public/resume.pdf` — the header "resume" link and the About page
-      point at it.
 - [x] Real projects, About bio and contact links in `src/data/projects.ts`.
 - [ ] Point each project's GitHub link at its repo (they currently link to the profile), and add
       Live / App Store links where they exist (marked `TODO(jono)`).
