@@ -1,0 +1,18 @@
+<svg viewBox="0 0 1600 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="noise1">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="80" />
+    </filter>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b4a;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#ff3333;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#cc2222;stop-opacity:0.7" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="700" fill="#1a0a0a" />
+  <ellipse cx="400" cy="350" rx="600" ry="400" fill="url(#grad1)" opacity="0.7" filter="url(#noise1)" />
+  <ellipse cx="1200" cy="200" rx="500" ry="350" fill="#ff8866" opacity="0.5" filter="url(#noise1)" />
+  <ellipse cx="900" cy="500" rx="400" ry="300" fill="#ff4444" opacity="0.4" filter="url(#noise1)" />
+  <path d="M 0,700 Q 400,600 800,650 T 1600,700" fill="#ff3333" opacity="0.3" filter="url(#noise1)" />
+</svg>
