@@ -3,6 +3,7 @@ import { motion, useIsPresent, type Transition } from 'motion/react'
 import type { Project } from '../types'
 import { DIM, PEEK, SCALE_STEP, flipSpring, morphSpring, stackSpring, easeIn } from '../lib/motion'
 import { useTitleMorph } from '../lib/useTitleMorph'
+import { TitleWords, titleFitStyle } from '../lib/titleFit'
 
 /**
  * Where a card sits, derived purely from its depth = (index - active) mod n.
@@ -154,8 +155,11 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeig
         {/* Title lives outside the clipped button so it is never clipped mid-morph. */}
         {/* Only the front card shows its title (back cards are covered; the falling card's title fades
             ahead of its image). The title is not a layoutId element: see useTitleMorph. */}
+        {/* Fit: the wrapper is a size container (cqw = % of card width). The title wraps to at most two
+            balanced lines within --title-measure (at most the middle 64% of the card, the part of the pill
+            clear of its round ends), and long titles step down in size via --title-k (see titleFit). */}
         <motion.span
-          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center [container-type:inline-size]"
           initial={false}
           animate={{ opacity: isFront ? 1 : 0 }}
           transition={{ duration: isFront ? 0.3 : zone === 'fallen' ? 0.4 : 0.2, ease: 'easeOut' }}
@@ -163,10 +167,14 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeig
           <span
             ref={titleRef}
             data-title-morph={project.slug}
-            className="inline-block whitespace-nowrap text-[clamp(24px,7vw,40px)] font-medium leading-none tracking-[-0.045em] text-white"
-            style={{ textShadow: '0 1px 18px rgba(0,0,0,0.28)', visibility: isPresent ? undefined : 'hidden' }}
+            className="block max-w-[var(--title-measure,64cqw)] text-balance text-center text-[calc(clamp(24px,7vw,40px)*var(--title-k,1))] font-medium leading-[1.08] tracking-[-0.045em] text-white"
+            style={{
+              ...titleFitStyle(project.title),
+              textShadow: '0 1px 18px rgba(0,0,0,0.28)',
+              visibility: isPresent ? undefined : 'hidden',
+            }}
           >
-            {project.title}
+            <TitleWords title={project.title} />
           </span>
         </motion.span>
       </div>

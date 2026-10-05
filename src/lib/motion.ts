@@ -15,6 +15,9 @@ export const flipSpring: Transition = { type: 'spring', stiffness: 120, damping:
 /** Pill -> banner / title -> headline shared-element morph. Critically damped (ζ ≈ 1), ~0.9s: unhurried, no overshoot on the big headline. */
 export const morphSpring: Transition = { type: 'spring', stiffness: 95, damping: 19.5, mass: 1 }
 
+/** Title morph, leading axis when the title re-wraps into different lines (see useTitleMorph): stiffer, still critically damped. */
+export const morphLeadSpring: Transition = { type: 'spring', stiffness: 260, damping: 32, mass: 1 }
+
 export const easeOutExpo = [0.16, 1, 0.3, 1] as const
 export const easeIn = [0.55, 0, 0.8, 0.35] as const
 

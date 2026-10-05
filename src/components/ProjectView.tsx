@@ -4,6 +4,7 @@ import type { Project } from '../types'
 import { BODY_DELAY, easeOutExpo, morphSpring } from '../lib/motion'
 import { ProjectDetailBody } from './ProjectDetailBody'
 import { useTitleMorph } from '../lib/useTitleMorph'
+import { TitleWords, titleFitStyle } from '../lib/titleFit'
 
 interface Props {
   project: Project
@@ -126,10 +127,10 @@ function ProjectContent({
             ref={titleRef}
             data-title-morph={project.slug}
             tabIndex={-1}
-            className="inline-block text-balance outline-none text-[clamp(44px,15.5vw,56px)] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[clamp(56px,11vw,168px)]"
-            style={{ visibility: exiting ? 'hidden' : undefined }}
+            className="inline-block text-balance outline-none text-[calc(clamp(44px,15.5vw,56px)*var(--headline-k,1))] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[calc(clamp(56px,11vw,168px)*var(--headline-k,1))]"
+            style={{ ...titleFitStyle(project.title), visibility: exiting ? 'hidden' : undefined }}
           >
-            {project.title}
+            <TitleWords title={project.title} />
           </h1>
         </div>
       </div>
