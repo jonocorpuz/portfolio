@@ -15,19 +15,26 @@ interface Props {
 
 const mod = (a: number, n: number) => ((a % n) + n) % n
 
-function useCardRadius() {
-  const calc = () => {
-    const vw = typeof window === 'undefined' ? 1280 : window.innerWidth
-    const w = Math.min(560, vw * (vw >= 640 ? 0.8 : 0.86))
-    return Math.round(w / 2.2 / 2)
-  }
-  const [r, setR] = useState(calc)
+/** Card geometry, mirroring the card's CSS: width min(560px, 86vw | 80vw from sm), aspect 2.2:1. */
+function cardSize() {
+  const vw = typeof window === 'undefined' ? 1280 : window.innerWidth
+  const w = Math.min(560, vw * (vw >= 640 ? 0.8 : 0.86))
+  const height = w / 2.2
+  return { height, radius: Math.round(height / 2) }
+}
+
+function useCardSize() {
+  const [size, setSize] = useState(cardSize)
   useEffect(() => {
-    const onResize = () => setR(calc())
+    const onResize = () =>
+      setSize((prev) => {
+        const next = cardSize()
+        return next.height === prev.height ? prev : next
+      })
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
-  return r
+  return size
 }
 
 /**
@@ -51,7 +58,7 @@ function zones(n: number) {
 
 export function Rolodex({ projects, active, reduced, focusOnMount = false, onOpen, onBring }: Props) {
   const n = projects.length
-  const radius = useCardRadius()
+  const { height: cardHeight, radius } = useCardSize()
   const { maxVisible, zoneOf } = zones(n)
   const stageRef = useRef<HTMLDivElement>(null)
 
@@ -92,6 +99,7 @@ export function Rolodex({ projects, active, reduced, focusOnMount = false, onOpe
               zone={n === 1 ? 'stack' : zoneOf(depth)}
               maxVisible={maxVisible}
               radius={radius}
+              cardHeight={cardHeight}
               reduced={reduced}
               onOpen={onOpen}
               onBring={() => onBring(i)}

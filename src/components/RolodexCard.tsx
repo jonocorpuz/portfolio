@@ -20,45 +20,59 @@ interface Props {
   zone: CardZone
   maxVisible: number
   radius: number
+  /** Card height in px (see useCardSize). Stack offsets are expressed in px, not %, see stackPose. */
+  cardHeight: number
   reduced: boolean
   onOpen: () => void
   onBring: () => void
 }
 
-function stackPose(depth: number) {
+/*
+ * The card's transform is bottom-centre origin (needed for the flip) and its `y` is in px.
+ * Both are given to motion as values (originX/originY, numeric y) rather than CSS
+ * (`transform-origin: 50% 100%`, `y: '-25%'`), so motion's own model of the card transform matches
+ * what the browser renders. The shared-element nodes inside the card (button/img `layoutId`) are
+ * measured by stripping their ancestors' transforms *with that model*; a mismatch there reads as a
+ * layout change and starts a phantom layout animation (the old "twitch" of the cards behind).
+ */
+function stackPose(depth: number, h: number) {
   const s = Math.pow(SCALE_STEP, depth)
   const peek = PEEK[Math.min(depth, PEEK.length - 1)]
-  // transform-origin is bottom-centre (needed for the flip), so scaling pulls the top edge
-  // down by (1 - s) * h. Compensate so the top edge sits exactly `peek * h` above the front card.
-  return { scale: s, y: `${-((1 - s) + peek) * 100}%` }
+  // Scaling about the bottom edge pulls the top edge down by (1 - s) * h. Compensate so the top
+  // edge sits exactly `peek * h` above the front card.
+  return { scale: s, y: -((1 - s) + peek) * h }
 }
 
-type Pose = { scale: number; y: string; rotateX: number; opacity: number }
+type Pose = { scale: number; y: number; rotateX: number; opacity: number }
 
-function poseFor(zone: CardZone, depth: number, maxVisible: number, reduced: boolean): Pose {
-  if (zone === 'stack') return { ...stackPose(depth), rotateX: 0, opacity: 1 }
-  if (zone === 'back') return { ...stackPose(maxVisible + 1), rotateX: 0, opacity: 0 }
+function poseFor(zone: CardZone, depth: number, maxVisible: number, h: number, reduced: boolean): Pose {
+  if (zone === 'stack') return { ...stackPose(depth, h), rotateX: 0, opacity: 1 }
+  if (zone === 'back') return { ...stackPose(maxVisible + 1, h), rotateX: 0, opacity: 0 }
   // fallen: rotate ~180deg about the bottom edge toward the viewer. Past 90deg the (visible)
   // back face reads as a mirrored reflection beneath the new front card, as in the reference.
   return reduced
-    ? { scale: 1, y: '0%', rotateX: 0, opacity: 0 }
-    : { scale: 1, y: '4%', rotateX: -172, opacity: 0 }
+    ? { scale: 1, y: 0, rotateX: 0, opacity: 0 }
+    : { scale: 1, y: 0.04 * h, rotateX: -172, opacity: 0 }
 }
 
-function transitionFor(zone: CardZone, reduced: boolean, delay: number): Transition {
-  if (reduced) return { duration: 0.3, ease: 'easeOut', delay }
-  if (zone === 'fallen') return { default: flipSpring, opacity: { duration: 0.65, ease: easeIn } }
-  if (zone === 'back') return { default: stackSpring, opacity: { duration: 0.22, ease: 'easeOut' } }
+function transitionFor(zone: CardZone, reduced: boolean, delay: number, resized: boolean): Transition {
+  // On a viewport resize only the px `y` changes; jump it so the stack rescales with the card's
+  // CSS size in the same frame (as a % offset would) instead of springing after it.
+  const resize: Transition = resized ? { y: { duration: 0 } } : {}
+  if (reduced) return { duration: 0.3, ease: 'easeOut', delay, ...resize }
+  if (zone === 'fallen') return { default: flipSpring, opacity: { duration: 0.65, ease: easeIn }, ...resize }
+  if (zone === 'back') return { default: stackSpring, opacity: { duration: 0.22, ease: 'easeOut' }, ...resize }
   // Stack (incl. a card swinging back up from 'fallen' on prev): rotation uses the heavier flip
   // spring, opacity comes in quickly so the rising "reflection" is visible as it swings up.
   return {
     default: { ...stackSpring, delay },
     rotateX: flipSpring,
     opacity: { duration: 0.32, ease: 'easeOut', delay },
+    ...resize,
   }
 }
 
-export function RolodexCard({ project, depth, zone, maxVisible, radius, reduced, onOpen, onBring }: Props) {
+export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeight, reduced, onOpen, onBring }: Props) {
   const isFront = zone === 'stack' && depth === 0
   const isVisibleBack = zone === 'stack' && depth > 0
   const hidden = zone !== 'stack'
@@ -75,6 +89,12 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, reduced,
   }, [])
   const delay = !mounted.current && isVisibleBack ? 0.12 + depth * 0.07 : 0
 
+  const lastHeight = useRef(cardHeight)
+  const resized = lastHeight.current !== cardHeight
+  useEffect(() => {
+    lastHeight.current = cardHeight
+  }, [cardHeight])
+
   const z = zone === 'fallen' ? 200 : zone === 'back' ? 0 : 100 - depth
   // The fallen card stays fairly bright so its mirrored underside reads as a reflection.
   const dim = zone === 'stack' ? DIM[Math.min(depth, DIM.length - 1)] : zone === 'fallen' ? 0.25 : DIM[DIM.length - 1]
@@ -82,10 +102,11 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, reduced,
   return (
     <motion.div
       className="col-start-1 row-start-1 aspect-[2.2/1] w-[min(560px,86vw)] sm:w-[min(560px,80vw)]"
-      style={{ zIndex: z, transformOrigin: '50% 100%', pointerEvents: hidden ? 'none' : 'auto' }}
-      initial={isVisibleBack ? poseFor('back', depth, maxVisible, reduced) : false}
-      animate={poseFor(zone, depth, maxVisible, reduced)}
-      transition={transitionFor(zone, reduced, delay)}
+      // Bottom-centre origin as motion values (not CSS transform-origin): see stackPose.
+      style={{ zIndex: z, originX: 0.5, originY: 1, pointerEvents: hidden ? 'none' : 'auto' }}
+      initial={isVisibleBack ? poseFor('back', depth, maxVisible, cardHeight, reduced) : false}
+      animate={poseFor(zone, depth, maxVisible, cardHeight, reduced)}
+      transition={transitionFor(zone, reduced, delay, resized)}
       aria-hidden={hidden || undefined}
     >
       <div className="relative h-full w-full">
