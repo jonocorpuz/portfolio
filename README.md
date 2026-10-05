@@ -1,6 +1,8 @@
 # Jono Corpuz — Portfolio
 
-A modern portfolio site showcasing software engineering projects. Built with Vite, React, TypeScript, Tailwind CSS, and Framer Motion.
+A modern portfolio site showcasing software engineering projects. Built with Vite, React, TypeScript, Tailwind CSS, and Motion (Framer Motion).
+
+Scroll, swipe or use the arrow keys to flip through the stack; Enter (or a click) opens a project, Esc closes it.
 
 ## Setup
 
@@ -30,17 +32,37 @@ npm run build
 
 The optimized build will be in the `dist/` directory.
 
-## Editing Projects
+## Editing content
 
-Edit the project data in `src/data/projects.ts`. Each project includes:
+Project data lives in `src/data/projects.ts`. Each project includes:
 - Title, year, and kind
 - Tagline and summary
 - Detailed sections
 - Role, timeline, and tech stack
 - Links to GitHub and live demos
-- Cover image (SVG)
+- Cover image
 
-To replace the placeholder covers, add new SVG files to `src/assets/covers/` and import them in `src/data/projects.ts`.
+The same file holds the site name/links (`site`) and the About page copy (`about`).
+
+Covers live in `src/assets/covers/` as WebP (~1600×700, 2.2:1-ish; they are cropped to a pill on
+the home page and to a 110px banner on project pages). Add a new file there and import it in
+`src/data/projects.ts`.
+
+## TODO before deploying
+
+- [ ] Drop your resume into `public/resume.pdf` — the header "resume" link and the About page
+      point at it.
+- [ ] Replace the placeholder projects, About bio and contact links in `src/data/projects.ts`
+      (marked `TODO(jono)`).
+- [ ] Add `og:url` and an absolute `og:image` in `index.html` once the site has a URL.
+
+## Routes
+
+Hash-based, so it works on any static host without rewrites:
+
+- `#/` — the project stack
+- `#/project/<slug>` — a project page
+- `#/about` — about
 
 ## Linting
 

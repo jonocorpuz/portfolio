@@ -1,7 +1,17 @@
 @import "tailwindcss";
 
+/* Metric-matched fallback so text doesn't jump when Inter Tight swaps in (display=swap). */
+@font-face {
+  font-family: "Inter Tight Fallback";
+  src: local("Arial"), local("ArialMT"), local("Helvetica Neue"), local("Helvetica");
+  size-adjust: 97%;
+  ascent-override: 99.9%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
 @theme {
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight", "Inter Tight Fallback", ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
@@ -13,6 +23,12 @@ body,
 html {
   background: #000;
   color: #fff;
+  color-scheme: dark;
+}
+
+::selection {
+  background: #fff;
+  color: #000;
 }
 
 body {

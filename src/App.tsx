@@ -35,6 +35,11 @@ export default function App() {
   const [hasLeftHome, setHasLeftHome] = useState(!isHome)
   if (!isHome && !hasLeftHome) setHasLeftHome(true)
 
+  useEffect(() => {
+    const base = 'Jono Corpuz — Software Engineer'
+    document.title = openProject ? `${openProject.title} — Jono Corpuz` : isAbout ? 'About — Jono Corpuz' : base
+  }, [openProject, isAbout])
+
   // Unknown slug -> home (clean the URL).
   useEffect(() => {
     if (openSlug && !openProject) close()
