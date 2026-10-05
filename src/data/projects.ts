@@ -7,6 +7,7 @@ import cover5 from '../assets/covers/cover-5-orange-gold.webp'
 import cover6 from '../assets/covers/cover-6-teal-green.webp'
 import cover7 from '../assets/covers/cover-7-indigo-magenta.webp'
 import cover8 from '../assets/covers/cover-8-monochrome-silver.webp'
+import cover9 from '../assets/covers/cover-9-midnight-amber.webp'
 
 const GITHUB = 'https://github.com/jonocorpuz'
 const LINKEDIN = 'https://www.linkedin.com/in/jonathan-corpuz/'
@@ -41,6 +42,70 @@ export const about: AboutInfo = {
 // and add { label: 'Live', href } / App Store links where they exist.
 export const projects: Project[] = [
   {
+    slug: 'backonstage',
+    title: 'BackOnStage',
+    year: '2026',
+    kind: 'Work',
+    tagline: 'Taking an established web platform native on iPhone',
+    summary:
+      'From January to August 2026 I was an iOS Software Engineer at Back On Stage in Vancouver. The company runs an established B2B SaaS platform, and I helped build its native iOS companion app in SwiftUI. I worked on it end to end, from how the app is put together to the screens people actually use.',
+    sections: [
+      {
+        heading: 'From the web to the phone',
+        body: [
+          "The platform already worked on the web, built in PHP and React, and some of its workflows were complicated. A lot of my job was working out what those flows should look like on a phone and then building them natively, so they feel like they belong there.",
+          'The app runs on the same REST APIs and AWS backend the web version already uses. That kept it plugged into what was there instead of building a second system next to it.',
+        ],
+      },
+      {
+        heading: 'Easier to use',
+        body: [
+          'Alongside the features themselves, I put time into the user experience and into accessibility, so the app is comfortable for more people to use.',
+        ],
+      },
+      {
+        heading: 'Built for whoever comes next',
+        body: [
+          "The app has more development phases ahead of it, so I spent time on the foundations. It's built on MVVM with careful state management and modular pieces, so new features can be added without pulling apart what's already there.",
+        ],
+      },
+    ],
+    role: 'iOS Software Engineer',
+    timeline: 'Jan 2026 to Aug 2026',
+    stack: ['Swift', 'SwiftUI', 'MVVM', 'REST APIs', 'AWS'],
+    links: [],
+    cover: cover9,
+  },
+  {
+    slug: 'ascend',
+    title: 'Ascend',
+    year: 'CMPT 276',
+    kind: 'Web App',
+    tagline: 'A full-stack fitness tracker, built by a team in sprints',
+    summary:
+      'Ascend is a full-stack fitness tracking web app. It was a team project, so a lot of what I got out of it was how to build software with other people.',
+    sections: [
+      {
+        heading: 'Working as a team',
+        body: [
+          "We ran it in Agile sprints with scrum meetings and sprint planning. Changes went up as pull requests and got reviewed before they merged. You learn a lot about Git the first time two people edit the same file and you have to sort out the merge conflict.",
+        ],
+      },
+      {
+        heading: 'My part',
+        body: [
+          'I worked on the Spring Boot backend, building the REST APIs behind the tracking features. I wrote integration tests with MockMvc and Spring Data JPA so we would hear about broken data or a failing endpoint before anyone using the app did.',
+          'I containerized the app with Docker and hosted it on Render, so new versions deployed automatically.',
+        ],
+      },
+    ],
+    role: 'Team developer',
+    timeline: 'Spring term, SFU',
+    stack: ['Spring Boot', 'Java', 'JavaScript', 'HTML/CSS', 'Docker', 'Render'],
+    links: [{ label: 'GitHub', href: GITHUB }],
+    cover: cover3,
+  },
+  {
     slug: 'gauge',
     title: 'Gauge',
     year: '2025',
@@ -70,8 +135,8 @@ export const projects: Project[] = [
     cover: cover5,
   },
   {
-    slug: 'ai-caddy',
-    title: 'AI Caddy',
+    slug: 'vibecaddy',
+    title: 'VibeCaddy',
     year: '2026',
     kind: 'iOS App',
     tagline: 'Yardages and club picks, on your phone, mid-round',
@@ -164,7 +229,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'posix-shell',
-    title: 'POSIX Shell',
+    title: 'POSIX Shell in C',
     year: 'CMPT 210',
     kind: 'Systems',
     tagline: 'A Unix shell, written in C from an empty file',
@@ -192,7 +257,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'cube-solver',
-    title: 'Cube Solver',
+    title: "Rubik's Cube Solver with IDA*",
     year: 'CMPT 225',
     kind: 'Algorithms',
     tagline: "Solving a Rubik's Cube in under 20 moves",
@@ -220,7 +285,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'groupchat',
-    title: 'Groupchat',
+    title: 'TCP Groupchat in C',
     year: 'CMPT 210',
     kind: 'Networking',
     tagline: 'A chat server in C, built straight on TCP sockets',
@@ -245,34 +310,5 @@ export const projects: Project[] = [
     stack: ['C', 'TCP sockets', 'pthreads', 'CGDB'],
     links: [{ label: 'GitHub', href: GITHUB }],
     cover: cover4,
-  },
-  {
-    slug: 'ascend',
-    title: 'Ascend',
-    year: 'CMPT 276',
-    kind: 'Web App',
-    tagline: 'A full-stack fitness tracker, built by a team in sprints',
-    summary:
-      'Ascend is a full-stack fitness tracking web app. It was a team project, so a lot of what I got out of it was how to build software with other people.',
-    sections: [
-      {
-        heading: 'Working as a team',
-        body: [
-          "We ran it in Agile sprints with scrum meetings and sprint planning. Changes went up as pull requests and got reviewed before they merged. You learn a lot about Git the first time two people edit the same file and you have to sort out the merge conflict.",
-        ],
-      },
-      {
-        heading: 'My part',
-        body: [
-          'I worked on the Spring Boot backend, building the REST APIs behind the tracking features. I wrote integration tests with MockMvc and Spring Data JPA so we would hear about broken data or a failing endpoint before anyone using the app did.',
-          'I containerized the app with Docker and hosted it on Render, so new versions deployed automatically.',
-        ],
-      },
-    ],
-    role: 'Team developer',
-    timeline: 'Spring term, SFU',
-    stack: ['Spring Boot', 'Java', 'JavaScript', 'HTML/CSS', 'Docker', 'Render'],
-    links: [{ label: 'GitHub', href: GITHUB }],
-    cover: cover3,
   },
 ]
