@@ -1,14 +1,14 @@
 // TODO(jono): replace with real projects
 
 import type { AboutInfo, Project, SiteInfo } from '../types'
-import cover1 from '../assets/covers/cover-1-coral-red.jpg'
-import cover2 from '../assets/covers/cover-2-blue-pink.jpg'
-import cover3 from '../assets/covers/cover-3-pink-white.jpg'
-import cover4 from '../assets/covers/cover-4-purple-cyan.jpg'
-import cover5 from '../assets/covers/cover-5-orange-gold.jpg'
-import cover6 from '../assets/covers/cover-6-teal-green.jpg'
-import cover7 from '../assets/covers/cover-7-indigo-magenta.jpg'
-import cover8 from '../assets/covers/cover-8-monochrome-silver.jpg'
+import cover1 from '../assets/covers/cover-1-coral-red.webp'
+import cover2 from '../assets/covers/cover-2-blue-pink.webp'
+import cover3 from '../assets/covers/cover-3-pink-white.webp'
+import cover4 from '../assets/covers/cover-4-purple-cyan.webp'
+import cover5 from '../assets/covers/cover-5-orange-gold.webp'
+import cover6 from '../assets/covers/cover-6-teal-green.webp'
+import cover7 from '../assets/covers/cover-7-indigo-magenta.webp'
+import cover8 from '../assets/covers/cover-8-monochrome-silver.webp'
 
 export const site: SiteInfo = {
   name: 'Jono Corpuz',

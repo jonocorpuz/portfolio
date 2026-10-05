@@ -90,6 +90,8 @@ function ProjectContent({
             src={project.cover}
             alt=""
             draggable={false}
+            decoding="async"
+            fetchPriority="high"
             className="aspect-[2/1] w-full max-w-none shrink-0 object-cover"
           />
         </span>

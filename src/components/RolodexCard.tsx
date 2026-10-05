@@ -110,6 +110,10 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, reduced,
               src={project.cover}
               alt=""
               draggable={false}
+              decoding="async"
+              // The front cover is the LCP element; everything else can wait its turn.
+              fetchPriority={isFront ? 'high' : 'low'}
+              loading={zone === 'stack' ? 'eager' : 'lazy'}
               className="aspect-[2/1] w-full max-w-none shrink-0 object-cover"
             />
           </span>
