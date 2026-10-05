@@ -62,9 +62,11 @@ function ProjectContent({
   // Opening from the stack: the headline flies in from the front card's title.
   useTitleMorph(titleRef, project.slug, !isHop, reduced)
 
-  // Detail always starts at the top (also after a project-to-project hop).
+  // Detail always starts at the top (also after a project-to-project hop), and focus moves to the
+  // headline so keyboard / screen-reader users land on the new page rather than <body>.
   useLayoutEffect(() => {
     window.scrollTo(0, 0)
+    titleRef.current?.focus({ preventScroll: true })
   }, [])
 
   return (
@@ -121,7 +123,8 @@ function ProjectContent({
           <h1
             ref={titleRef}
             data-title-morph={project.slug}
-            className="inline-block text-balance text-[clamp(44px,15.5vw,56px)] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[clamp(56px,11vw,168px)]"
+            tabIndex={-1}
+            className="inline-block text-balance outline-none text-[clamp(44px,15.5vw,56px)] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[clamp(56px,11vw,168px)]"
             style={{ visibility: exiting ? 'hidden' : undefined }}
           >
             {project.title}

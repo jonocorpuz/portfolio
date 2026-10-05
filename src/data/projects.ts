@@ -1,6 +1,6 @@
 // TODO(jono): replace with real projects
 
-import { Project, SiteInfo } from '../types'
+import type { AboutInfo, Project, SiteInfo } from '../types'
 import cover1 from '../assets/covers/cover-1-coral-red.jpg'
 import cover2 from '../assets/covers/cover-2-blue-pink.jpg'
 import cover3 from '../assets/covers/cover-3-pink-white.jpg'
@@ -16,7 +16,25 @@ export const site: SiteInfo = {
   links: [
     { label: 'about', href: '#/about' },
     { label: 'github', href: 'https://github.com/' },
-    { label: 'resume', href: '#' },
+    // TODO(jono): drop resume.pdf into public/ (see README)
+    { label: 'resume', href: `${import.meta.env.BASE_URL}resume.pdf` },
+  ],
+}
+
+// TODO(jono): replace the placeholder bio + contact links with real ones.
+export const about: AboutInfo = {
+  tagline: 'Software engineer who likes the whole stack — and the details in it.',
+  bio: [
+    "I'm Jono, a software engineer who enjoys turning fuzzy problems into well-built, carefully finished products. Most of my work lives somewhere between the browser and the backend: product interfaces, data-heavy tools and the services behind them.",
+    'I care about the parts people feel but rarely name — fast load times, interactions that respond the way you expect, and code the next engineer can pick up without a tour.',
+    'Outside of work I tinker with side projects, read more about systems design than is probably healthy, and keep a running list of small tools I want to exist.',
+  ],
+  focus: ['TypeScript', 'React', 'Node.js', 'Python', 'Postgres', 'Cloud infrastructure'],
+  contact: [
+    { label: 'Email', href: 'mailto:hello@example.com' },
+    { label: 'GitHub', href: 'https://github.com/' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    { label: 'Resume', href: `${import.meta.env.BASE_URL}resume.pdf` },
   ],
 }
 

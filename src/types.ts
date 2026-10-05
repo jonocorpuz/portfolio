@@ -28,3 +28,10 @@ export interface SiteInfo {
   blurb: string
   links: ProjectLink[]
 }
+
+export interface AboutInfo {
+  tagline: string
+  bio: string[]
+  focus: string[]
+  contact: ProjectLink[]
+}

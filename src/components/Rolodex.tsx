@@ -7,6 +7,8 @@ interface Props {
   projects: Project[]
   active: number
   reduced: boolean
+  /** Focus the front card when the stack mounts (returning from a project / about). */
+  focusOnMount?: boolean
   onOpen: () => void
   onBring: (index: number) => void
 }
@@ -47,11 +49,18 @@ function zones(n: number) {
   }
 }
 
-export function Rolodex({ projects, active, reduced, onOpen, onBring }: Props) {
+export function Rolodex({ projects, active, reduced, focusOnMount = false, onOpen, onBring }: Props) {
   const n = projects.length
   const radius = useCardRadius()
   const { maxVisible, zoneOf } = zones(n)
   const stageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!focusOnMount) return
+    stageRef.current?.querySelector<HTMLButtonElement>('[data-rolodex-front]')?.focus({ preventScroll: true })
+    // mount only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // If focus was on a card that just moved back, hand it to the new front card.
   useEffect(() => {

@@ -4,6 +4,7 @@ import { projects } from './data/projects'
 import { Footer, Header } from './components/Chrome'
 import { Rolodex } from './components/Rolodex'
 import { ProjectView } from './components/ProjectView'
+import { AboutView } from './components/AboutView'
 import { useHashRoute } from './hooks/useHashRoute'
 import { useStackNavigation } from './hooks/useStackNavigation'
 
@@ -12,7 +13,7 @@ const n = projects.length
 
 export default function App() {
   const reduced = useReducedMotion() ?? false
-  const { openSlug, open, close } = useHashRoute()
+  const { route, openSlug, open, close } = useHashRoute()
 
   const [active, setActive] = useState(() => Math.max(0, indexOfSlug(openSlug)))
 
@@ -27,29 +28,42 @@ export default function App() {
 
   const openIndex = indexOfSlug(openSlug)
   const openProject = openIndex >= 0 ? projects[openIndex] : null
+  const isAbout = route.name === 'about'
+  const isHome = !openProject && !isAbout
+
+  // Once the visitor has left the stack, returning to it hands focus back to the front card.
+  const [hasLeftHome, setHasLeftHome] = useState(!isHome)
+  if (!isHome && !hasLeftHome) setHasLeftHome(true)
 
   // Unknown slug -> home (clean the URL).
   useEffect(() => {
-    if (openSlug && !openProject) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/')
-    }
-  }, [openSlug, openProject])
+    if (openSlug && !openProject) close()
+  }, [openSlug, openProject, close])
 
   const next = useCallback(() => setActive((a) => (a + 1) % n), [])
   const prev = useCallback(() => setActive((a) => (a - 1 + n) % n), [])
   const openActive = useCallback(() => open(projects[active].slug), [open, active])
 
-  useStackNavigation({ count: n, enabled: !openProject, onNext: next, onPrev: prev, onOpen: openActive })
+  useStackNavigation({ count: n, enabled: isHome, onNext: next, onPrev: prev, onOpen: openActive })
 
   return (
     <>
-      <Header onHome={openProject ? close : undefined} overlay={!!openProject} />
+      <Header onHome={isHome ? undefined : close} overlay={!!openProject} current={isAbout ? 'about' : undefined} />
       <LayoutGroup>
         <AnimatePresence>
           {openProject ? (
             <ProjectView key="detail" project={openProject} reduced={reduced} onClose={close} />
+          ) : isAbout ? (
+            <AboutView key="about" reduced={reduced} onClose={close} />
           ) : (
-            <Home key="home" active={active} reduced={reduced} onOpen={openActive} onBring={setActive} />
+            <Home
+              key="home"
+              active={active}
+              reduced={reduced}
+              restoreFocus={hasLeftHome}
+              onOpen={openActive}
+              onBring={setActive}
+            />
           )}
         </AnimatePresence>
       </LayoutGroup>
@@ -60,11 +74,13 @@ export default function App() {
 function Home({
   active,
   reduced,
+  restoreFocus,
   onOpen,
   onBring,
 }: {
   active: number
   reduced: boolean
+  restoreFocus: boolean
   onOpen: () => void
   onBring: (i: number) => void
 }) {
@@ -76,7 +92,14 @@ function Home({
       initial={false}
       exit={{ opacity: 0, transition: { duration: reduced ? 0.15 : 0.35, ease: 'easeOut' } }}
     >
-      <Rolodex projects={projects} active={active} reduced={reduced} onOpen={onOpen} onBring={onBring} />
+      <Rolodex
+        projects={projects}
+        active={active}
+        reduced={reduced}
+        focusOnMount={restoreFocus}
+        onOpen={onOpen}
+        onBring={onBring}
+      />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.4, delay: reduced ? 0 : 0.25 } }}

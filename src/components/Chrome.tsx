@@ -5,7 +5,16 @@ import type { Project } from '../types'
 const ring =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded-sm'
 
-export function Header({ onHome, overlay = false }: { onHome?: () => void; overlay?: boolean }) {
+export function Header({
+  onHome,
+  overlay = false,
+  current,
+}: {
+  onHome?: () => void
+  overlay?: boolean
+  /** label of the site link for the current page (gets aria-current) */
+  current?: string
+}) {
   const shadow = overlay ? { textShadow: '0 1px 12px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.35)' } : undefined
   return (
     <header
@@ -23,13 +32,15 @@ export function Header({ onHome, overlay = false }: { onHome?: () => void; overl
       )}
       <nav aria-label="Site links" className="flex gap-5">
         {site.links.map((l) => {
-          const external = /^https?:/.test(l.href)
+          const external = /^https?:/.test(l.href) || l.href.endsWith('.pdf')
+          const isCurrent = l.label === current
           return (
             <a
               key={l.label}
               href={l.href}
+              aria-current={isCurrent ? 'page' : undefined}
               {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-              className={`transition-opacity hover:opacity-60 ${ring}`}
+              className={`transition-opacity hover:opacity-60 ${isCurrent ? 'underline decoration-white/40 underline-offset-4' : ''} ${ring}`}
             >
               {l.label}
             </a>
