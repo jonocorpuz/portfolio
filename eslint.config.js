@@ -1,27 +1,17 @@
+import { defineConfig } from 'eslint/config'
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
-import tsParser from '@typescript-eslint/parser'
-import tsPlugin from '@typescript-eslint/eslint-plugin'
+import tseslint from 'typescript-eslint'
 
-export default [
-  { ignores: ['dist', 'node_modules'] },
+export default defineConfig(
+  { ignores: ['dist'] },
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
+    extends: [js.configs.recommended, tseslint.configs.recommended, reactHooks.configs['recommended-latest']],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2022,
       globals: globals.browser,
-      parser: tsParser,
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      '@typescript-eslint': tsPlugin,
-    },
-    rules: {
-      ...js.configs.recommended.rules,
-      ...tsPlugin.configs?.recommended?.rules,
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
     },
   },
-]
+)
