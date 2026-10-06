@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useIsPresent } from 'motion/react'
+import { AnimatePresence, LayoutGroup, motion, useIsPresent } from 'motion/react'
 import type { Project } from '../types'
 import { BODY_DELAY, morphTransition } from '../lib/motion'
 import { ProjectDetailBody } from './ProjectDetailBody'
@@ -34,16 +34,23 @@ export function ProjectView({ project, reduced, onClose }: Props) {
       // Exiting detail fades quickly; the banner/headline hand off to the card.
       exit={{ opacity: 0, transition: { duration: reduced ? 0.15 : 0.25, ease: 'easeOut' } }}
     >
-      <AnimatePresence mode="wait">
-        <ProjectContent
-          key={project.slug}
-          project={project}
-          reduced={reduced}
-          isHop={hopped}
-          exiting={!isPresent}
-          onClose={onClose}
-        />
-      </AnimatePresence>
+      {/* Own layout group, same layoutId namespace (inherit="id"): the shared morph with the card still
+          works, but when this view unmounts mid-close its nodes leave only this group. In the app-wide
+          group, that removal re-measures every member, which restarts the returning card's morph
+          ~250ms in: the box loses its velocity (a hitch) and its mixed border radius freezes until the
+          restarted animation ends, then snaps. */}
+      <LayoutGroup inherit="id">
+        <AnimatePresence mode="wait">
+          <ProjectContent
+            key={project.slug}
+            project={project}
+            reduced={reduced}
+            isHop={hopped}
+            exiting={!isPresent}
+            onClose={onClose}
+          />
+        </AnimatePresence>
+      </LayoutGroup>
     </motion.main>
   )
 }

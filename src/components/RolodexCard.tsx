@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { motion, useIsPresent, type Transition } from 'motion/react'
 import type { Project } from '../types'
-import { DIM, PEEK, SCALE_STEP, flipSpring, morphTransition, stackSpring, easeIn } from '../lib/motion'
+import { DIM, PEEK, PILL_RADIUS, SCALE_STEP, flipSpring, morphTransition, stackSpring, easeIn } from '../lib/motion'
 import { useTitleMorph } from '../lib/useTitleMorph'
 import { TitleWords, titleFitStyle } from '../lib/titleFit'
 
@@ -134,8 +134,13 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardWidt
           data-rolodex-front={isFront ? '' : undefined}
           aria-label={isFront ? `Open project ${project.title}` : `Bring ${project.title} to front`}
           className="absolute inset-0 block cursor-pointer overflow-hidden bg-neutral-900 outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-black"
-          // borderRadius set via style so motion scale-corrects it during the layout morph
-          style={{ borderRadius: radius }}
+          // borderRadius via style so motion mixes + scale-corrects it during the shared morph, which it
+          // does linearly in px with the morph's progress. Closing (this card is the lead), PILL_RADIUS:
+          // the mixed value passes half the box height within a frame and CSS clamps oversized radii
+          // to half the shorter side, so the card is a pill of its current visual size throughout.
+          // Opening (this card is the follow, the banner leads with 0), the exact pill radius, so the
+          // corners square off progressively rather than snapping at the end. Both render identically at rest.
+          style={{ borderRadius: isPresent ? PILL_RADIUS : radius }}
         >
           {/* The image keeps a fixed 2:1 aspect and is centred in a clipping box. Its own layoutId
               morph is therefore a uniform scale (no stretching) while the parent's clip morphs. */}

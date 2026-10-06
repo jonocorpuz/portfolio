@@ -39,6 +39,9 @@ export const DIM = [0, 0.28, 0.48, 0.64, 0.8]
 /** Card aspect ratio (width / height) and max width in px. */
 export const CARD_ASPECT = 2.2
 export const CARD_MAX_W = 560
+/** A border radius far beyond any card height: CSS clamps it to a pill (see RolodexCard). */
+export const PILL_RADIUS = 100_000
+
 /** Short viewports (landscape phones): card height is capped at this fraction of the viewport height
  *  minus px, so the peeking stack clears the header and the footer. */
 export const CARD_MAX_VH = 0.6
