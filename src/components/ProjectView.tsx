@@ -16,7 +16,7 @@ interface Props {
 /**
  * Detail page. The banner shares layoutIds with the front Rolodex card (`card-<slug>`,
  * `cover-<slug>`) so opening morphs pill -> banner; the headline morphs from the card title via
- * useTitleMorph. Closing reverses both into the stack.
+ * element: the outgoing copy hides at once instead of crossfading, which over black read as a dim flicker.
  */
 export function ProjectView({ project, reduced, onClose }: Props) {
   const isPresent = useIsPresent()
@@ -83,6 +83,7 @@ function ProjectContent({
       {/* Banner: the pill morphs into this. borderRadius via style -> motion animates/corrects it. */}
       <motion.div
         layoutId={`card-${project.slug}`}
+        layoutCrossfade={false}
         transition={morph}
         className="relative z-40 h-[110px] w-full overflow-hidden bg-neutral-900"
         style={{ borderRadius: 0 }}
@@ -90,6 +91,7 @@ function ProjectContent({
         <span className="absolute inset-0 flex items-center justify-center">
           <motion.img
             layoutId={`cover-${project.slug}`}
+            layoutCrossfade={false}
             transition={morph}
             src={project.cover}
             alt=""

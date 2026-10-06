@@ -124,6 +124,7 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardWidt
         <motion.button
           type="button"
           layoutId={`card-${project.slug}`}
+          layoutCrossfade={false}
           // Only measure for the shared-element morph when the stack leaves (a project opens). Without
           // this every activeIndex change snapshots every card in the LayoutGroup.
           layoutDependency={isPresent}
@@ -141,6 +142,7 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardWidt
           <span className="absolute inset-0 flex items-center justify-center">
             <motion.img
               layoutId={`cover-${project.slug}`}
+              layoutCrossfade={false}
               layoutDependency={isPresent}
               transition={morphTransition(reduced)}
               src={project.cover}

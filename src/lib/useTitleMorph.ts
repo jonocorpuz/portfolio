@@ -95,8 +95,13 @@ export function useTitleMorph(
       b.style.transform = `translateX(${x}px) translateY(${y}px) scale(${s})`
       return animate(b, { x: [x, 0], y: [y, 0], scale: [s, 1] }, options)
     })
-    // Interrupted (e.g. the stack flips while the title is still flying back): jump to the end pose.
-    // Stopping would leave each word frozen mid-flight, still offset when the card returns to the front.
-    return () => controls.forEach((c) => c.complete())
+    // Interrupted (e.g. the stack flips while the title is still flying back): stop and drop the
+    // transform, so no word is left frozen mid-flight when its card returns to the front. (Not
+    // `complete()`: under StrictMode's effect replay it stalls other entering animations in motion 14.)
+    return () =>
+      controls.forEach((c, i) => {
+        c.stop()
+        targets[i].b.style.transform = 'none'
+      })
   }, [ref, slug, enabled, reduced])
 }
