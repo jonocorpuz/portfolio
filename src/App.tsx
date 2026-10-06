@@ -15,19 +15,14 @@ export default function App() {
   const reduced = useReducedMotion() ?? false
   const { route, openSlug, open, close } = useHashRoute()
 
-  const [active, setActive] = useState(() => Math.max(0, indexOfSlug(openSlug)))
-
-  // Keep the stack index in sync with the route (deep links, "next project" hops, back/forward)
-  // so closing always collapses into the card that was open. Adjusting state during render.
-  const [syncedSlug, setSyncedSlug] = useState(openSlug)
-  if (openSlug !== syncedSlug) {
-    setSyncedSlug(openSlug)
-    const i = indexOfSlug(openSlug)
-    if (i >= 0 && i !== active) setActive(i)
-  }
-
   const openIndex = indexOfSlug(openSlug)
   const openProject = openIndex >= 0 ? projects[openIndex] : null
+
+  // While a project is open the stack index follows it (deep links, "next project" hops,
+  // back/forward), so closing always collapses into the card that was open. Adjusting state during
+  // render: React re-renders immediately, before anything is committed.
+  const [active, setActive] = useState(() => Math.max(0, openIndex))
+  if (openIndex >= 0 && openIndex !== active) setActive(openIndex)
   const isAbout = route.name === 'about'
   const isHome = !openProject && !isAbout
 
@@ -49,7 +44,7 @@ export default function App() {
   const prev = useCallback(() => setActive((a) => (a - 1 + n) % n), [])
   const openActive = useCallback(() => open(projects[active].slug), [open, active])
 
-  useStackNavigation({ count: n, enabled: isHome, onNext: next, onPrev: prev, onOpen: openActive })
+  useStackNavigation({ enabled: isHome, onNext: next, onPrev: prev, onOpen: openActive })
 
   return (
     <>
@@ -92,7 +87,8 @@ function Home({
   const isPresent = useIsPresent()
   return (
     <motion.div
-      className="fixed inset-0 overflow-hidden"
+      // pinch-zoom only: a vertical swipe flips the stack (useStackNavigation) instead of panning the page
+      className="fixed inset-0 touch-pinch-zoom overflow-hidden"
       style={{ zIndex: isPresent ? 30 : 20 }}
       initial={false}
       exit={{ opacity: 0, transition: { duration: reduced ? 0.15 : 0.35, ease: 'easeOut' } }}

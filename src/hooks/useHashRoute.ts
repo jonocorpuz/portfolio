@@ -20,10 +20,20 @@ function parse(): Route {
   return { name: 'home' }
 }
 
+/*
+ * Each history entry records in `history.state` whether it was pushed from home. That travels with
+ * the entry through back/forward (and reloads), so close() always knows if "back" leads home: a
+ * flag kept in memory would describe the last transition instead, and after e.g. a deep link,
+ * a project-to-project hop, close and Back, history.back() would leave the site.
+ */
+const isMarked = () => typeof (window.history.state as { fromHome?: unknown } | null)?.fromHome === 'boolean'
+const isFromHome = () => (window.history.state as { fromHome?: unknown } | null)?.fromHome === true
+const mark = (fromHome: boolean, url?: string) => window.history.replaceState({ fromHome }, '', url)
+
 /**
  * Hash router: `#/` (home), `#/about`, `#/project/<slug>`.
- * close() goes back in history when the previous entry was home (so back/forward stay symmetric),
- * otherwise it replaces the current entry with `#/`. Esc calls close on any non-home route.
+ * close() goes back in history when the current entry was pushed from home (so back/forward stay
+ * symmetric), otherwise it replaces the current entry with `#/`. Esc calls close on any non-home route.
  */
 export function useHashRoute(): {
   route: Route
@@ -32,19 +42,18 @@ export function useHashRoute(): {
   close: () => void
 } {
   const [route, setRoute] = useState<Route>(parse)
-  // true when the current (non-home) entry was reached directly from home within this app
-  const fromHome = useRef(false)
-  const lastHash = useRef(window.location.hash)
+  // The route as of the latest navigation, including one close() has started but the browser has not
+  // finished yet (history.back() is async), so a second close in the meantime is a no-op.
   const current = useRef(route)
 
   useEffect(() => {
+    // The entry the visitor landed on was not reached from home within the app.
+    if (!isMarked()) mark(false)
     const sync = () => {
-      if (window.location.hash === lastHash.current) return
-      lastHash.current = window.location.hash
-      const next = parse()
-      fromHome.current = next.name !== 'home' && current.current.name === 'home'
-      current.current = next
-      setRoute(next)
+      // An unmarked entry is a new one (open() or a link pushed it); a revisited one keeps its mark.
+      if (!isMarked()) mark(current.current.name === 'home')
+      current.current = parse()
+      setRoute(current.current)
     }
     window.addEventListener('hashchange', sync)
     return () => window.removeEventListener('hashchange', sync)
@@ -58,13 +67,11 @@ export function useHashRoute(): {
 
   const close = useCallback(() => {
     if (current.current.name === 'home') return
-    if (fromHome.current) {
-      fromHome.current = false
+    current.current = { name: 'home' }
+    if (isFromHome()) {
       window.history.back() // hashchange syncs state
     } else {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search + '#/')
-      lastHash.current = window.location.hash
-      current.current = { name: 'home' }
+      mark(false, window.location.pathname + window.location.search + '#/')
       setRoute(current.current)
     }
   }, [])
