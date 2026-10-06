@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useAnimate, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { AnimatePresence, motion, useAnimate, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { site } from '../data/projects'
 import type { Project } from '../types'
 import { LABEL_SWAP, easeInOut } from '../lib/motion'
@@ -63,6 +63,42 @@ export function Header({
         })}
       </nav>
     </header>
+  )
+}
+
+/**
+ * Scroll indicator for the scrolling pages (the app hides native scrollbars): a thin rail on the right
+ * edge that fills from the top as the page scrolls. Hidden when the page fits the viewport.
+ */
+export function ScrollIndicator({ reduced }: { reduced: boolean }) {
+  const { scrollYProgress } = useScroll()
+  const smooth = useSpring(scrollYProgress, { stiffness: 260, damping: 40, restDelta: 0.001 })
+  const [scrollable, setScrollable] = useState(false)
+
+  useEffect(() => {
+    const check = () => setScrollable(document.documentElement.scrollHeight > window.innerHeight + 1)
+    const raf = requestAnimationFrame(check) // after the page has laid out
+    window.addEventListener('resize', check)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', check)
+    }
+  }, [])
+
+  return (
+    <motion.div
+      aria-hidden
+      className="pointer-events-none fixed right-2 top-1/2 z-50 h-[min(40vh,320px)] w-[2px] -translate-y-1/2 overflow-hidden rounded-full bg-white/15 sm:right-3"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: scrollable ? 1 : 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
+      <motion.div
+        className="h-full w-full origin-top rounded-full bg-white/70"
+        style={{ scaleY: reduced ? scrollYProgress : smooth }}
+      />
+    </motion.div>
   )
 }
 

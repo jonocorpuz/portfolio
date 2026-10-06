@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, LayoutGroup, motion, useIsPresent, useReducedMotion } from 'motion/react'
 import { projects, site } from './data/projects'
-import { Footer, Header } from './components/Chrome'
+import { Footer, Header, ScrollIndicator } from './components/Chrome'
 import { Rolodex } from './components/Rolodex'
 import { ProjectView } from './components/ProjectView'
 import { AboutView } from './components/AboutView'
@@ -49,6 +49,10 @@ export default function App() {
   return (
     <>
       <Header onHome={isHome ? undefined : close} overlay={!!openProject} current={isAbout ? 'about' : 'projects'} />
+      {/* Keyed per page, so it re-checks whether the new page scrolls. */}
+      <AnimatePresence>
+        {!isHome && <ScrollIndicator key={openSlug ?? 'about'} reduced={reduced} />}
+      </AnimatePresence>
       <LayoutGroup>
         <AnimatePresence>
           {openProject ? (
