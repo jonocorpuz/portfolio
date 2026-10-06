@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { motion, useIsPresent, type Transition } from 'motion/react'
 import type { Project } from '../types'
-import { DIM, PEEK, SCALE_STEP, flipSpring, morphSpring, stackSpring, easeIn } from '../lib/motion'
+import { DIM, PEEK, SCALE_STEP, flipSpring, morphTransition, stackSpring, easeIn } from '../lib/motion'
 import { useTitleMorph } from '../lib/useTitleMorph'
 import { TitleWords, titleFitStyle } from '../lib/titleFit'
 
@@ -21,6 +21,7 @@ interface Props {
   zone: CardZone
   maxVisible: number
   radius: number
+  cardWidth: number
   /** Card height in px (see useCardSize). Stack offsets are expressed in px, not %, see stackPose. */
   cardHeight: number
   reduced: boolean
@@ -73,7 +74,15 @@ function transitionFor(zone: CardZone, reduced: boolean, delay: number, resized:
   }
 }
 
-export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeight, reduced, onOpen, onBring }: Props) {
+/**
+ * Hover / keyboard-focus lift. A CSS transition on a plain (non-motion) wrapper, so motion's
+ * projection never sees it: the open morph measures the card where it visually is, scaled or not.
+ * Tailwind's hover: is (hover: hover)-gated, so touch never sticks; motion-safe: drops it for reduced motion.
+ */
+const cardLift =
+  'transition-[scale] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:hover:scale-[1.03] motion-safe:has-[:focus-visible]:scale-[1.02]'
+
+export function RolodexCard({ project, depth, zone, maxVisible, radius, cardWidth, cardHeight, reduced, onOpen, onBring }: Props) {
   const isFront = zone === 'stack' && depth === 0
   const isVisibleBack = zone === 'stack' && depth > 0
   const hidden = zone !== 'stack'
@@ -102,22 +111,23 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeig
 
   return (
     <motion.div
-      className="col-start-1 row-start-1 aspect-[2.2/1] w-[min(560px,86vw)] sm:w-[min(560px,80vw)]"
-      // Bottom-centre origin as motion values (not CSS transform-origin): see stackPose.
-      style={{ zIndex: z, originX: 0.5, originY: 1, pointerEvents: hidden ? 'none' : 'auto' }}
+      className="col-start-1 row-start-1"
+      // Size comes from cardSize (Rolodex). Bottom-centre origin as motion values (not CSS transform-origin): see stackPose.
+      style={{ width: cardWidth, height: cardHeight, zIndex: z, originX: 0.5, originY: 1, pointerEvents: hidden ? 'none' : 'auto' }}
       initial={isVisibleBack ? poseFor('back', depth, maxVisible, cardHeight, reduced) : false}
       animate={poseFor(zone, depth, maxVisible, cardHeight, reduced)}
       transition={transitionFor(zone, reduced, delay, resized)}
       aria-hidden={hidden || undefined}
     >
-      <div className="relative h-full w-full">
+      {/* Hover / focus lift lives on this plain wrapper, never on the posed motion.div: see cardLift. */}
+      <div className={`relative h-full w-full ${cardLift}`}>
         <motion.button
           type="button"
           layoutId={`card-${project.slug}`}
           // Only measure for the shared-element morph when the stack leaves (a project opens). Without
           // this every activeIndex change snapshots every card in the LayoutGroup.
           layoutDependency={isPresent}
-          transition={reduced ? { duration: 0.12 } : morphSpring}
+          transition={morphTransition(reduced)}
           onClick={isFront ? onOpen : onBring}
           tabIndex={isFront ? 0 : -1}
           data-rolodex-front={isFront ? '' : undefined}
@@ -132,7 +142,7 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeig
             <motion.img
               layoutId={`cover-${project.slug}`}
               layoutDependency={isPresent}
-              transition={reduced ? { duration: 0.12 } : morphSpring}
+              transition={morphTransition(reduced)}
               src={project.cover}
               alt=""
               draggable={false}
@@ -157,8 +167,10 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeig
             ahead of its image). The title is not a layoutId element: see useTitleMorph. */}
         {/* Fit: the wrapper is a size container (cqw = % of card width). The title wraps to at most two
             balanced lines within --title-measure (at most the middle 64% of the card, the part of the pill
-            clear of its round ends), and long titles step down in size via --title-k (see titleFit). */}
+            clear of its round ends), and long titles step down in size via --title-k (see titleFit). The 9cqw cap only
+            bites on height-capped (landscape phone) cards, where 7vw would outgrow the pill. */}
         <motion.span
+          aria-hidden
           className="pointer-events-none absolute inset-0 flex items-center justify-center [container-type:inline-size]"
           initial={false}
           animate={{ opacity: isFront ? 1 : 0 }}
@@ -167,7 +179,7 @@ export function RolodexCard({ project, depth, zone, maxVisible, radius, cardHeig
           <span
             ref={titleRef}
             data-title-morph={project.slug}
-            className="block max-w-[var(--title-measure,64cqw)] text-balance text-center text-[calc(clamp(24px,7vw,40px)*var(--title-k,1))] font-medium leading-[1.08] tracking-[-0.045em] text-white"
+            className="block max-w-[var(--title-measure,64cqw)] text-balance text-center text-[calc(min(clamp(24px,7vw,40px),9cqw)*var(--title-k,1))] font-medium leading-[1.08] tracking-[-0.045em] text-white"
             style={{
               ...titleFitStyle(project.title),
               textShadow: '0 1px 18px rgba(0,0,0,0.28)',

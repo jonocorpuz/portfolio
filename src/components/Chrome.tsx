@@ -1,9 +1,9 @@
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useAnimate, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { site } from '../data/projects'
 import type { Project } from '../types'
-
-const ring =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded-sm'
+import { LABEL_SWAP, easeInOut } from '../lib/motion'
+import { isExternal, ring } from './ui'
 
 export function Header({
   onHome,
@@ -16,15 +16,26 @@ export function Header({
   current?: string
 }) {
   const shadow = overlay ? { textShadow: '0 1px 12px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.35)' } : undefined
+  // Scrolling pages (project / about): a soft black fade behind the header comes in as the page scrolls,
+  // so body text passing underneath stays legible. At the top it is invisible, so the banner stays clean.
+  const { scrollY } = useScroll()
+  const backdrop = useTransform(scrollY, [0, 64], [0, 1])
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 flex items-start justify-between gap-4 px-[18px] py-[18px] text-[13px] sm:text-[14px] font-medium tracking-[-0.02em] text-white sm:px-10 sm:py-7"
+      className="fixed inset-x-0 top-0 z-50 flex items-start justify-between gap-4 px-[18px] py-[18px] text-[13px] sm:text-[14px] font-medium tracking-[-0.02em] text-white sm:px-10 sm:py-7 max-[360px]:gap-3 max-[360px]:text-[12px]"
       style={shadow}
     >
+      {onHome && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[96px] bg-gradient-to-b from-black from-45% to-transparent sm:h-[124px]"
+          style={{ opacity: backdrop }}
+        />
+      )}
       <span className="whitespace-nowrap">{site.name}</span>
-      <nav aria-label="Site links" className="flex gap-3 sm:gap-5">
+      <nav aria-label="Site links" className="flex gap-3 sm:gap-5 max-[360px]:gap-2.5">
         {site.links.map((l) => {
-          const external = /^https?:/.test(l.href) || l.href.endsWith('.pdf')
+          const external = isExternal(l.href)
           const isCurrent = l.label === current
           return (
             <a
@@ -41,7 +52,8 @@ export function Header({
                     }
                   : undefined
               }
-              className={`hover:opacity-60 ${ring}`}
+              // Current page: a faint underline, so it reads as "you are here" without shouting.
+              className={`transition-opacity duration-300 ease-in-out hover:opacity-60 aria-[current=page]:underline aria-[current=page]:decoration-white/40 aria-[current=page]:decoration-1 aria-[current=page]:underline-offset-[5px] rounded-sm ${ring}`}
             >
               {l.label}
             </a>
@@ -54,23 +66,63 @@ export function Header({
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
+/**
+ * Footer project label. One element, never remounted: on a change it fades out, swaps its text, then
+ * fades back in. A change mid-fade just retargets (no queue, no stacked copies), so rapid scrolling
+ * lands straight on the latest project. Bottom-aligned in the footer, so a two-line kind grows upward
+ * and nothing else moves.
+ */
+function FooterLabel({ project }: { project: Project }) {
+  const reduce = useReducedMotion()
+  const [shown, setShown] = useState(project)
+  const [scope, animate] = useAnimate<HTMLDivElement>()
+  const swapped = useRef(false)
+
+  useEffect(() => {
+    const t = { duration: LABEL_SWAP, ease: easeInOut }
+    const d = reduce ? 0 : 4
+    if (project.slug !== shown.slug) {
+      let live = true
+      // Retargeted mid-fade: only the remaining opacity is left to fade, so rapid changes don't stall.
+      const left = parseFloat(getComputedStyle(scope.current).opacity)
+      const out = { opacity: 0, y: -d, filter: `blur(${reduce ? 0 : 3}px)` }
+      animate(scope.current, out, { ...t, duration: LABEL_SWAP * left }).then(() => {
+        if (!live) return
+        swapped.current = true
+        setShown(project)
+      })
+      return () => {
+        live = false
+      }
+    }
+    // New text rises in from below (as the counter does); a change undone mid-fade just fades back.
+    animate(scope.current, { opacity: 1, y: swapped.current ? [d, 0] : 0, filter: 'blur(0px)' }, t)
+    swapped.current = false
+  }, [project, shown, reduce, animate, scope])
+
+  return (
+    <div ref={scope} className="min-w-0 leading-tight">
+      <div className="font-semibold">{shown.label}</div>
+      <div className="text-balance text-white/55">
+        {shown.year} · {shown.kind}
+      </div>
+    </div>
+  )
+}
+
 export function Footer({ project, index, total }: { project: Project; index: number; total: number }) {
   const reduce = useReducedMotion()
   const y = reduce ? 0 : 10
   return (
     <footer className="pointer-events-none fixed inset-x-0 bottom-0 z-40 grid grid-cols-[1fr_auto] items-end gap-4 px-[18px] pb-[18px] text-[13px] tracking-[-0.02em] text-white sm:px-10 sm:pb-7">
-      {/* Floor fade: the falling card's mirrored "reflection" dissolves before it reaches the footer text. */}
+      {/* Floor fade: the falling card's mirrored "reflection" dissolves before it reaches the footer text.
+          Capped by vh so on short (landscape) screens it doesn't swallow the front card. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-[170px] bg-gradient-to-t from-black from-45% to-transparent sm:h-[190px]"
+        className="absolute inset-x-0 bottom-0 -z-10 h-[min(170px,32vh)] bg-gradient-to-t from-black from-45% to-transparent sm:h-[min(190px,32vh)]"
       />
-      <div className="min-w-0 leading-tight">
-        <div className="font-semibold">{project.label}</div>
-        <div className="text-balance text-white/55">
-          {project.year} · {project.kind}
-        </div>
-      </div>
-      <div className="justify-self-end font-medium tabular-nums" aria-label={`Project ${index + 1} of ${total}`}>
+      <FooterLabel project={project} />
+      <div className="justify-self-end font-medium tabular-nums" aria-hidden>
         <span className="relative inline-flex h-[1.2em] overflow-hidden align-bottom">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
@@ -85,7 +137,7 @@ export function Footer({ project, index, total }: { project: Project; index: num
             </motion.span>
           </AnimatePresence>
         </span>
-        <span className="text-white/55">/{pad(total)}</span>
+        <span className="inline-flex h-[1.2em] align-bottom text-white/55">/{pad(total)}</span>
       </div>
     </footer>
   )

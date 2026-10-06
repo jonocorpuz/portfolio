@@ -1,8 +1,9 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useIsPresent } from 'motion/react'
 import type { Project } from '../types'
-import { BODY_DELAY, easeOutExpo, morphSpring } from '../lib/motion'
+import { BODY_DELAY, morphTransition } from '../lib/motion'
 import { ProjectDetailBody } from './ProjectDetailBody'
+import { BackButton, headline, pageGrid, rise } from './ui'
 import { useTitleMorph } from '../lib/useTitleMorph'
 import { TitleWords, titleFitStyle } from '../lib/titleFit'
 
@@ -19,9 +20,11 @@ interface Props {
  */
 export function ProjectView({ project, reduced, onClose }: Props) {
   const isPresent = useIsPresent()
-  // The slug this view was opened with gets the shared-element morph. A later "next project"
-  // hop swaps content with a plain crossfade (no matching card exists to morph from).
-  const openedWith = useRef(project.slug)
+  // Only the project this view was opened with gets the shared-element morph. Any later content (a
+  // "next project" hop, or back to the first project) crossfades: no matching card exists to morph from.
+  const [openedWith] = useState(project.slug)
+  const [hopped, setHopped] = useState(false)
+  if (!hopped && project.slug !== openedWith) setHopped(true)
 
   return (
     <motion.main
@@ -36,7 +39,7 @@ export function ProjectView({ project, reduced, onClose }: Props) {
           key={project.slug}
           project={project}
           reduced={reduced}
-          isHop={project.slug !== openedWith.current}
+          isHop={hopped}
           exiting={!isPresent}
           onClose={onClose}
         />
@@ -58,7 +61,7 @@ function ProjectContent({
   exiting: boolean
   onClose: () => void
 }) {
-  const morph = reduced ? { duration: 0.12 } : morphSpring
+  const morph = morphTransition(reduced)
   const titleRef = useRef<HTMLHeadingElement>(null)
   // Opening from the stack: the headline flies in from the front card's title.
   useTitleMorph(titleRef, project.slug, !isHop, reduced)
@@ -99,7 +102,7 @@ function ProjectContent({
         {/* soft top shade so the overlaid header stays legible */}
         <motion.span
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 to-transparent"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -108,17 +111,8 @@ function ProjectContent({
       </motion.div>
 
       {/* Same grid as ProjectDetailBody so the headline aligns with the body's left column. */}
-      <div className="relative z-[45] grid grid-cols-1 px-[18px] pt-6 sm:px-10 sm:pt-8 lg:grid-cols-[220px_minmax(0,60ch)_220px] lg:justify-center lg:gap-x-12">
-        <motion.button
-          type="button"
-          onClick={onClose}
-          className="col-span-full w-fit cursor-pointer rounded-sm text-[13px] font-medium tracking-[-0.02em] text-white/60 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { delay: reduced ? 0 : BODY_DELAY, duration: 0.4 } }}
-          exit={{ opacity: 0, transition: { duration: 0.15 } }}
-        >
-          <span aria-hidden>←</span> all projects
-        </motion.button>
+      <div className={`${pageGrid} relative z-[45] pt-6 sm:pt-8`}>
+        <BackButton onClick={onClose} reduced={reduced} fadeOnExit />
 
         {/* Headline: inline-block so its box hugs the text. It morphs to/from the card title as a single
             element (useTitleMorph); while the detail view exits it hides so the card title takes over. */}
@@ -127,7 +121,7 @@ function ProjectContent({
             ref={titleRef}
             data-title-morph={project.slug}
             tabIndex={-1}
-            className="inline-block text-balance outline-none text-[calc(clamp(44px,15.5vw,56px)*var(--headline-k,1))] font-semibold leading-none tracking-[-0.05em] text-white sm:text-[calc(clamp(56px,11vw,168px)*var(--headline-k,1))]"
+            className={`${headline} text-balance`}
             style={{ ...titleFitStyle(project.title), visibility: exiting ? 'hidden' : undefined }}
           >
             <TitleWords title={project.title} />
@@ -136,13 +130,7 @@ function ProjectContent({
       </div>
 
       <motion.div
-        initial={reduced ? { opacity: 0 } : { opacity: 0, y: 24, filter: 'blur(10px)' }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          transition: { delay: reduced ? 0 : BODY_DELAY, duration: reduced ? 0.2 : 0.7, ease: easeOutExpo },
-        }}
+        {...rise(reduced, BODY_DELAY)}
         exit={
           reduced
             ? { opacity: 0, transition: { duration: 0.12 } }

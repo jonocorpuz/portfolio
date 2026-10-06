@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Project } from '../types'
-import { MAX_VISIBLE_DEPTH } from '../lib/motion'
+import { CARD_ASPECT, CARD_MAX_VH, CARD_MAX_W, CARD_VH_OFFSET, MAX_VISIBLE_DEPTH } from '../lib/motion'
 import { RolodexCard, type CardZone } from './RolodexCard'
 
 interface Props {
@@ -15,12 +15,14 @@ interface Props {
 
 const mod = (a: number, n: number) => ((a % n) + n) % n
 
-/** Card geometry, mirroring the card's CSS: width min(560px, 86vw | 80vw from sm), aspect 2.2:1. */
+/** Card geometry (the single source for the card's size): 86vw on phones, 80vw from 640px, capped by
+ *  CARD_MAX_W and, on short screens, by the viewport height. */
 function cardSize() {
-  const vw = typeof window === 'undefined' ? 1280 : window.innerWidth
-  const w = Math.min(560, vw * (vw >= 640 ? 0.8 : 0.86))
-  const height = w / 2.2
-  return { height, radius: Math.round(height / 2) }
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  const width = Math.min(CARD_MAX_W, vw * (vw >= 640 ? 0.8 : 0.86), (CARD_MAX_VH * vh - CARD_VH_OFFSET) * CARD_ASPECT)
+  const height = width / CARD_ASPECT
+  return { width, height, radius: Math.round(height / 2) }
 }
 
 function useCardSize() {
@@ -58,16 +60,15 @@ function zones(n: number) {
 
 export function Rolodex({ projects, active, reduced, focusOnMount = false, onOpen, onBring }: Props) {
   const n = projects.length
-  const { height: cardHeight, radius } = useCardSize()
+  const { width: cardWidth, height: cardHeight, radius } = useCardSize()
   const { maxVisible, zoneOf } = zones(n)
   const stageRef = useRef<HTMLDivElement>(null)
 
+  // Home remounts on every return, so this runs once per visit.
   useEffect(() => {
     if (!focusOnMount) return
     stageRef.current?.querySelector<HTMLButtonElement>('[data-rolodex-front]')?.focus({ preventScroll: true })
-    // mount only
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [focusOnMount])
 
   // If focus was on a card that just moved back, hand it to the new front card.
   useEffect(() => {
@@ -96,9 +97,10 @@ export function Rolodex({ projects, active, reduced, focusOnMount = false, onOpe
               key={p.slug}
               project={p}
               depth={depth}
-              zone={n === 1 ? 'stack' : zoneOf(depth)}
+              zone={zoneOf(depth)}
               maxVisible={maxVisible}
               radius={radius}
+              cardWidth={cardWidth}
               cardHeight={cardHeight}
               reduced={reduced}
               onOpen={onOpen}
