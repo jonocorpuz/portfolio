@@ -91,6 +91,11 @@ function Home({
       className="fixed inset-0 touch-pinch-zoom overflow-hidden"
       style={{ zIndex: isPresent ? 30 : 20 }}
       initial={false}
+      // An explicit enter target, not just an exit: the exiting home stays mounted (already faded to 0)
+      // until the shared-element morph lands (~1s). Closing the project in that window makes
+      // AnimatePresence re-present this same node, and with no `animate` nothing would fade it back
+      // in: the stack stayed at opacity 0 (a black screen).
+      animate={{ opacity: 1, transition: { duration: reduced ? 0.15 : 0.35, ease: 'easeOut' } }}
       exit={{ opacity: 0, transition: { duration: reduced ? 0.15 : 0.35, ease: 'easeOut' } }}
     >
       <Rolodex
