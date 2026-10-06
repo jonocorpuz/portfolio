@@ -52,9 +52,10 @@ export function Header({
                     }
                   : undefined
               }
-              // Ease-out both ways so the fade visibly starts the moment the pointer arrives or leaves
-              // (an ease-in-out's slow first third reads as a lag, then a snap).
-              className={`transition-opacity duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-60 rounded-sm ${ring}`}
+              // One gentle curve both ways: CSS `ease` starts moving at once (no ease-in-out lag) but,
+              // unlike a steep ease-out, doesn't read as an instant jump. Colour, not opacity, so it
+              // repaints smoothly like any text change.
+              className={`transition-colors duration-[350ms] ease-[ease] hover:text-white/60 rounded-sm ${ring}`}
             >
               {l.label}
             </a>

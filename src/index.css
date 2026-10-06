@@ -31,6 +31,15 @@ html {
   color: #000;
 }
 
+/* No scrollbar anywhere: pages still scroll (wheel, touch, keys), but the window never narrows when
+   a long project page opens and widens again when it closes. */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
