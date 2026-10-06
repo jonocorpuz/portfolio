@@ -52,8 +52,9 @@ export function Header({
                     }
                   : undefined
               }
-              // Current page: a faint underline, so it reads as "you are here" without shouting.
-              className={`transition-opacity duration-300 ease-in-out hover:opacity-60 aria-[current=page]:underline aria-[current=page]:decoration-white/40 aria-[current=page]:decoration-1 aria-[current=page]:underline-offset-[5px] rounded-sm ${ring}`}
+              // Ease-out both ways so the fade visibly starts the moment the pointer arrives or leaves
+              // (an ease-in-out's slow first third reads as a lag, then a snap).
+              className={`transition-opacity duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-60 rounded-sm ${ring}`}
             >
               {l.label}
             </a>
@@ -67,10 +68,10 @@ export function Header({
 const pad = (n: number) => String(n).padStart(2, '0')
 
 /**
- * Footer project label. One element, never remounted: on a change it fades out, swaps its text, then
- * fades back in. A change mid-fade just retargets (no queue, no stacked copies), so rapid scrolling
- * lands straight on the latest project. Bottom-aligned in the footer, so a two-line kind grows upward
- * and nothing else moves.
+ * Footer project label. The name swaps instantly; the "year · kind" line below fades out, swaps its
+ * text, then fades back in. That line is one element, never remounted: a change mid-fade just retargets
+ * (no queue, no stacked copies), so rapid scrolling lands straight on the latest project. Bottom-aligned
+ * in the footer, so a two-line kind grows upward and nothing else moves.
  */
 function FooterLabel({ project }: { project: Project }) {
   const reduce = useReducedMotion()
@@ -101,9 +102,9 @@ function FooterLabel({ project }: { project: Project }) {
   }, [project, shown, reduce, animate, scope])
 
   return (
-    <div ref={scope} className="min-w-0 leading-tight">
-      <div className="font-semibold">{shown.label}</div>
-      <div className="text-balance text-white/55">
+    <div className="min-w-0 leading-tight">
+      <div className="font-semibold">{project.label}</div>
+      <div ref={scope} className="text-balance text-white/55">
         {shown.year} · {shown.kind}
       </div>
     </div>
